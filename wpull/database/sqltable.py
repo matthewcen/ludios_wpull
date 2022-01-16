@@ -170,7 +170,7 @@ class BaseSQLURLTable(BaseURLTable):
             subquery = select([URLString.id]).where(URLString.url == url)\
                 .limit(1)
             query = update(QueuedURL).values(values)\
-                .where(QueuedURL.url_string_id == subquery)
+                .where(QueuedURL.url_string_id == subquery).execution_options(synchronize_session="fetch")
 
             session.execute(query)
 
@@ -188,12 +188,9 @@ class BaseSQLURLTable(BaseURLTable):
                 values[getattr(QueuedURL, key)] = value
 
             # TODO: rewrite as a join for clarity
-            subquery = select([URLString.id]).where(URLString.url == url)\
-                .limit(1)
-            query = update(QueuedURL).values(values)\
-                .where(QueuedURL.url_string_id == subquery)
-
-            session.execute(query)
+            subquery = select(URLString.id).where(URLString.url == url).limit(1).subquery()
+            query = update(QueuedURL).values(values).where(QueuedURL.url_string_id == subquery)
+            session.execute(query.execution_options(synchronize_session="fetch"))
 
     def release(self):
         with self._session() as session:
@@ -275,11 +272,11 @@ class SQLiteURLTable(BaseSQLURLTable):
         # of WAL.
         escaped_path = path.replace('?', '_')
         self._engine = create_engine(
-            'sqlite:///{0}'.format(escaped_path), poolclass=SingletonThreadPool)
+            'sqlite:///{0}'.format(escaped_path), poolclass=SingletonThreadPool, future=True)
         sqlalchemy.event.listen(
             self._engine, 'connect', self._apply_pragmas_callback)
         DBBase.metadata.create_all(self._engine)
-        self._session_maker_instance = sessionmaker(bind=self._engine)
+        self._session_maker_instance = sessionmaker(bind=self._engine, future=True)
 
     @classmethod
     def _apply_pragmas_callback(cls, connection, record):
