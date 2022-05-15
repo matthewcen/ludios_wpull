@@ -11,7 +11,7 @@ from wpull.collections import OrderedDefaultDict
 _ = gettext.gettext
 
 
-class NameValueRecord(collections.MutableMapping):
+class NameValueRecord(collections.abc.MutableMapping):
     '''An ordered mapping of name-value pairs.
 
     Duplicated names are accepted.
