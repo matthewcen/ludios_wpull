@@ -102,7 +102,7 @@ setup_kwargs['install_requires'] = [
     'html5-parser',
     'lxml',
     'sqlalchemy==1.4',
-    'tornado==4.5.3',
+    'tornado',
     'yapsy',
 ]
 
