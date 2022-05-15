@@ -1,6 +1,7 @@
 import asyncio
 
 from typing import Optional
+from tornado.testing import AsyncTestCase
 
 import wpull.testing.async_
 from wpull.application.app import Application
@@ -12,8 +13,7 @@ class MyItemTask(ItemTask[int]):
     def __init__(self, callback=None):
         self.callback = callback
 
-    @asyncio.coroutine
-    def process(self, work_item: int):
+    async def process(self, work_item: int):
         if self.callback:
             self.callback(work_item)
 
@@ -22,15 +22,14 @@ class MyItemSource(ItemSource[int]):
     def __init__(self, values):
         self.values = list(values)
 
-    @asyncio.coroutine
-    def get_item(self) -> Optional[int]:
+    async def get_item(self) -> Optional[int]:
         if self.values:
             return self.values.pop(0)
 
 
-class TestAppliation(wpull.testing.async_.AsyncTestCase):
+class TestAppliation(AsyncTestCase):
     @wpull.testing.async_.async_test()
-    def test_simple(self):
+    async def test_simple(self):
         source1 = MyItemSource([1, 2, 3])
         source2 = MyItemSource([4, 5, 6])
 
@@ -39,12 +38,12 @@ class TestAppliation(wpull.testing.async_.AsyncTestCase):
 
         app = Application(PipelineSeries([pipeline1, pipeline2]))
 
-        exit_code = yield from app.run()
+        exit_code = await app.run()
 
         self.assertEqual(0, exit_code)
 
     @wpull.testing.async_.async_test()
-    def test_exit_codes(self):
+    async def test_exit_codes(self):
         for error_class, expected_exit_code in Application.ERROR_CODE_MAP.items():
             with self.subTest(error_class):
                 source = MyItemSource([1, 2, 3])
@@ -56,12 +55,12 @@ class TestAppliation(wpull.testing.async_.AsyncTestCase):
                 pipeline = Pipeline(source, [task])
                 app = Application(PipelineSeries([pipeline]))
 
-                exit_code = yield from app.run()
+                exit_code = await app.run()
 
                 self.assertEqual(expected_exit_code, exit_code)
 
     @wpull.testing.async_.async_test()
-    def test_pipeline_skipping(self):
+    async def test_pipeline_skipping(self):
         source1 = MyItemSource([1, 2, 3])
         source2 = MyItemSource([4, 5, 6])
         source3 = MyItemSource([7, 8, 9])
@@ -81,7 +80,7 @@ class TestAppliation(wpull.testing.async_.AsyncTestCase):
 
         task1.callback = callback
 
-        yield from app.run()
+        await app.run()
 
         self.assertTrue(source1.values, 'unprocessed')
         self.assertTrue(source2.values, 'skipped')
