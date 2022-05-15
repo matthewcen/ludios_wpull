@@ -3,10 +3,10 @@ from http import cookiejar
 
 import asyncio
 import tornado.web
-from tornado.testing import AsyncHTTPSTestCase
+from tornado.testing import AsyncHTTPSTestCase, AsyncTestCase
 import tornado.ioloop
 
-from wpull.testing.async_ import AsyncTestCase
+# from wpull.testing.async_ import AsyncTestCase
 from wpull.testing.badapp import BadAppTestCase
 from wpull.testing.ftp import FTPTestCase
 from wpull.testing.goodapp import GoodAppTestCase
@@ -56,22 +56,24 @@ class SimpleHandler(tornado.web.RequestHandler):
         self.write(b'OK')
 
 
-class HTTPSSimpleAppTestCase(AsyncTestCase, AsyncHTTPSTestCase, TempDirMixin):
-    def get_new_ioloop(self):
-        tornado.ioloop.IOLoop.configure(
-            'wpull.testing.async_.TornadoAsyncIOLoop',
-            event_loop=self.event_loop)
-        ioloop = tornado.ioloop.IOLoop()
-        return ioloop
+class HTTPSSimpleAppTestCase(AsyncHTTPSTestCase, TempDirMixin):
+    # def get_new_ioloop(self):
+    #     # tornado.ioloop.IOLoop.configure(
+    #         # 'wpull.testing.async_.TornadoAsyncIOLoop',
+    #         # event_loop=self.event_loop)
+    #     # ioloop = tornado.ioloop.IOLoop()
+    #     # ioloop = asyncio.new_event_loop
+    #     ioloop = self.io_loop
+    #     return ioloop
 
     def setUp(self):
-        AsyncTestCase.setUp(self)
+        # AsyncTestCase.setUp(self)
         AsyncHTTPSTestCase.setUp(self)
         self.set_up_temp_dir()
 
     def tearDown(self):
         AsyncHTTPSTestCase.tearDown(self)
-        AsyncTestCase.tearDown(self)
+        # AsyncTestCase.tearDown(self)
         self.tear_down_temp_dir()
 
     def get_app(self):

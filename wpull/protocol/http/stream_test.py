@@ -11,7 +11,7 @@ import tornado.netutil
 
 import wpull.testing.async_
 from wpull.errors import NetworkError, ConnectionRefused, ProtocolError, \
-    NetworkTimedOut, SSLVerificationError
+    NetworkTimedOut, SSLCertVerificationError
 from wpull.network.connection import Connection, SSLConnection
 from wpull.protocol.http.request import Request
 from wpull.protocol.http.stream import Stream
@@ -518,7 +518,7 @@ class TestSSLStream(SSLBadAppTestCase, StreamTestsMixin):
 
         try:
             yield from self.fetch(stream, request)
-        except SSLVerificationError:
+        except SSLCertVerificationError:
             pass
         else:
             self.fail()  # pragma: no cover

@@ -35,4 +35,4 @@ def async_test(func=None, timeout=30):
 
 class TornadoAsyncIOLoop(BaseAsyncIOLoop):
     def initialize(self, event_loop):
-        super().initialize(event_loop, close_loop=False)
+        super().initialize(event_loop)

@@ -8,13 +8,12 @@ import logging
 import os
 import socket
 import ssl
-from ssl import SSLCertVerificationError
 
 import tornado.netutil
 from typing import Optional, Union
 from wpull.backport.logging import BraceMessage as __
 from wpull.errors import NetworkError, ConnectionRefused, \
-    NetworkTimedOut
+    NetworkTimedOut, SSLCertVerificationError
 
 _logger = logging.getLogger(__name__)
 
