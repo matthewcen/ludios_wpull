@@ -16,18 +16,14 @@ class AsyncTestCase(unittest.TestCase):
         self.event_loop.stop()
         self.event_loop.close()
 
+class AsyncTestCaseNew(unittest.IsolatedAsyncioTestCase):
+    pass
 
 def async_test(func=None, timeout=30):
     # tornado.testing
     def wrap(f):
-        f = asyncio.coroutine(f)
-
-        @functools.wraps(f)
-        def wrapper(self):
-            return self.event_loop.run_until_complete(
-                asyncio.wait_for(f(self), timeout=timeout,
-                                 loop=self.event_loop)
-            )
+        async def wrapper(self):
+            return await asyncio.wait_for(f(self), timeout=timeout)
         return wrapper
 
     if func is not None:
@@ -39,7 +35,6 @@ def async_test(func=None, timeout=30):
     else:
         # Used like @gen_test(timeout=10)
         return wrap
-
 
 class TornadoAsyncIOLoop(BaseAsyncIOLoop):
     def initialize(self, event_loop):
