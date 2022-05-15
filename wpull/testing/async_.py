@@ -16,9 +16,6 @@ class AsyncTestCase(unittest.TestCase):
         self.event_loop.stop()
         self.event_loop.close()
 
-class AsyncTestCaseNew(unittest.IsolatedAsyncioTestCase):
-    pass
-
 def async_test(func=None, timeout=30):
     # tornado.testing
     def wrap(f):
