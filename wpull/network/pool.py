@@ -37,8 +37,7 @@ class HostPool(object):
         '''Return whether the pool is empty.'''
         return not self.ready and not self.busy
 
-    @asyncio.coroutine
-    def clean(self, force: bool=False):
+    async def clean(self, force: bool=False):
         '''Clean closed connections.
 
         Args:
@@ -46,7 +45,7 @@ class HostPool(object):
 
         Coroutine.
         '''
-        with (yield from self._lock):
+        async with self._lock:
             for connection in tuple(self.ready):
                 if force or connection.closed():
                     connection.close()
@@ -69,15 +68,14 @@ class HostPool(object):
         '''Return total number of connections.'''
         return len(self.ready) + len(self.busy)
 
-    @asyncio.coroutine
-    def acquire(self) -> Connection:
+    async def acquire(self) -> Connection:
         '''Register and return a connection.
 
         Coroutine.
         '''
         assert not self._closed
 
-        yield from self._condition.acquire()
+        await self._condition.acquire()
 
         while True:
             if self.ready:
@@ -87,15 +85,14 @@ class HostPool(object):
                 connection = self._connection_factory()
                 break
             else:
-                yield from self._condition.wait()
+                await self._condition.wait()
 
         self.busy.add(connection)
         self._condition.release()
 
         return connection
 
-    @asyncio.coroutine
-    def release(self, connection: Connection, reuse: bool=True):
+    async def release(self, connection: Connection, reuse: bool=True):
         '''Unregister a connection.
 
         Args:
@@ -104,7 +101,7 @@ class HostPool(object):
 
         Coroutine.
         '''
-        yield from self._condition.acquire()
+        await self._condition.acquire()
         self.busy.remove(connection)
 
         if reuse:
@@ -268,8 +265,7 @@ class ConnectionPool(object):
 
         return context_wrapper()
 
-    @asyncio.coroutine
-    def clean(self, force: bool=False):
+    async def clean(self, force: bool=False):
         '''Clean all closed connections.
 
         Args:
@@ -279,9 +275,9 @@ class ConnectionPool(object):
         '''
         assert not self._closed
 
-        with (yield from self._host_pools_lock):
+        async with self._host_pools_lock:
             for key, pool in tuple(self._host_pools.items()):
-                yield from pool.clean(force=force)
+                await pool.clean(force=force)
 
                 if not self._host_pool_waiters[key] and pool.empty():
                     del self._host_pools[key]

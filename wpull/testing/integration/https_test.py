@@ -7,11 +7,9 @@ from wpull.protocol.http.request import Request
 from wpull.protocol.http.web import WebSession
 from wpull.testing.integration.base import HTTPSSimpleAppTestCase
 import wpull.testing.async_
-from tornado.testing import gen_test
 
 
 class TestHTTPSApp(HTTPSSimpleAppTestCase):
-    @gen_test
     @wpull.testing.async_.async_test()
     def test_check_certificate(self):
         arg_parser = AppArgumentParser()
@@ -26,7 +24,6 @@ class TestHTTPSApp(HTTPSSimpleAppTestCase):
 
         self.assertEqual(5, exit_code)
 
-    @gen_test
     @wpull.testing.async_.async_test()
     def test_https_only(self):
         arg_parser = AppArgumentParser()
@@ -45,7 +42,6 @@ class TestHTTPSApp(HTTPSSimpleAppTestCase):
         self.assertEqual(0, exit_code)
         self.assertEqual(1, builder.factory['Statistics'].files)
 
-    @gen_test
     @wpull.testing.async_.async_test()
     def test_ssl_bad_certificate(self):
         arg_parser = AppArgumentParser()
