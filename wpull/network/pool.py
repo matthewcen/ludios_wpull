@@ -206,8 +206,7 @@ class ConnectionPool(object):
 
         return connection
 
-    @asyncio.coroutine
-    def release(self, connection: Connection):
+    async def release(self, connection: Connection):
         '''Put a connection back in the pool.
 
         Coroutine.
@@ -219,10 +218,10 @@ class ConnectionPool(object):
 
         _logger.debug('Check in %s', key)
 
-        yield from host_pool.release(connection)
+        await host_pool.release(connection)
 
         force = self.count() > self._max_count
-        yield from self.clean(force=force)
+        await self.clean(force=force)
 
     def no_wait_release(self, connection: Connection):
         '''Synchronous version of :meth:`release`.'''
@@ -247,7 +246,7 @@ class ConnectionPool(object):
 
         Usage::
 
-            session = yield from connection_pool.session('example.com', 80)
+            session = await connection_pool.session('example.com', 80)
             with session as connection:
                 connection.write(b'blah')
                 connection.close()
@@ -359,40 +358,36 @@ class HappyEyeballsConnection(object):
         if self._active_connection:
             self._active_connection.reset()
 
-    @asyncio.coroutine
-    def connect(self):
+    async def connect(self):
         if self._active_connection:
-            yield from self._active_connection.connect()
+            await self._active_connection.connect()
             return
 
-        result = yield from self._resolver.resolve(self._address[0])
+        result = await self._resolver.resolve(self._address[0])
 
         primary_host, secondary_host = self._get_preferred_host(result)
 
         if not secondary_host:
             self._primary_connection = self._active_connection = \
                 self._connection_factory((primary_host, self._address[1]))
-            yield from self._primary_connection.connect()
+            await self._primary_connection.connect()
         else:
-            yield from self._connect_dual_stack(
+            await self._connect_dual_stack(
                 (primary_host, self._address[1]),
                 (secondary_host, self._address[1])
             )
 
-    @asyncio.coroutine
-    def _connect_dual_stack(self, primary_address, secondary_address):
+    async def _connect_dual_stack(self, primary_address, secondary_address):
         '''Connect using happy eyeballs.'''
         self._primary_connection = self._connection_factory(primary_address)
         self._secondary_connection = self._connection_factory(secondary_address)
 
-        @asyncio.coroutine
-        def connect_primary():
-            yield from self._primary_connection.connect()
+        async def connect_primary():
+            await self._primary_connection.connect()
             return self._primary_connection
 
-        @asyncio.coroutine
-        def connect_secondary():
-            yield from self._secondary_connection.connect()
+        async def connect_secondary():
+            await self._secondary_connection.connect()
             return self._secondary_connection
 
         primary_fut = connect_primary()
@@ -403,7 +398,7 @@ class HappyEyeballsConnection(object):
         for fut in asyncio.as_completed((primary_fut, secondary_fut)):
             if not self._active_connection:
                 try:
-                    self._active_connection = yield from fut
+                    self._active_connection = await fut
                 except NetworkError:
                     if not failed:
                         _logger.debug('Original dual stack exception', exc_info=True)
@@ -414,10 +409,9 @@ class HappyEyeballsConnection(object):
                     _logger.debug('Got first of dual stack.')
 
             else:
-                @asyncio.coroutine
-                def cleanup():
+                async def cleanup():
                     try:
-                        conn = yield from fut
+                        conn = await fut
                     except NetworkError:
                         pass
                     else:

@@ -77,9 +77,8 @@ class TestHook(AsyncTestCase):
 
         hook.register('b')
 
-        @asyncio.coroutine
-        def my_callback_2():
-            yield from asyncio.sleep(0)
+        async def my_callback_2():
+            await asyncio.sleep(0)
             return 9
 
         hook.connect('b', my_callback_2)

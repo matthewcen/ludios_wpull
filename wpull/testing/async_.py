@@ -6,6 +6,7 @@ from tornado.testing import gen_test
 import asyncio
 
 
+# TODO: Replace class with Tornado's AsyncTestCase
 # http://stackoverflow.com/q/23033939/1524507
 class AsyncTestCase(unittest.TestCase):
     def setUp(self):
@@ -17,7 +18,6 @@ class AsyncTestCase(unittest.TestCase):
         self.event_loop.stop()
         self.event_loop.close()
 
-# TODO: Replace async_test with gen_test's timeout
 def async_test(func=None, timeout=30):
     # gen_test uses environment variable ASYNC_TEST_TIMEOUT as default if set, otherwise 5 seconds
     return gen_test(func, timeout)

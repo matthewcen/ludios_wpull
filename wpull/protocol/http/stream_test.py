@@ -61,13 +61,12 @@ class StreamTestsMixin(object):
 
         return stream
 
-    @asyncio.coroutine
-    def fetch(self, stream, request):
-        yield from stream.reconnect()
-        yield from stream.write_request(request)
-        response = yield from stream.read_response()
+    async def fetch(self, stream, request):
+        await stream.reconnect()
+        await stream.write_request(request)
+        response = await stream.read_response()
         content = io.BytesIO()
-        yield from stream.read_body(request, response, content)
+        await stream.read_body(request, response, content)
         return response, content.getvalue()
 
     @wpull.testing.async_.async_test(timeout=DEFAULT_TIMEOUT)
