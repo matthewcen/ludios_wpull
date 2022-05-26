@@ -54,7 +54,7 @@ class TestCollections(unittest.TestCase):
         self.assertEqual(2, len(d2))
 
     def test_ordered_default_dict_deep_copy(self):
-        d1 = OrderedDefaultDict()
+        d1 = defaultdict()
         d1['a'] = object()
         d2 = copy.deepcopy(d1)
         self.assertNotEqual(d1['a'], d2['a'])

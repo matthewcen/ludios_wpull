@@ -1,18 +1,9 @@
 # encoding=utf-8
 '''Data structures.'''
-from collections import OrderedDict,defaultdict
 import collections
 import copy
 import itertools
 import functools
-
-
-class OrderedDefaultDict(defaultdict):
-    '''
-    As of Python 3.7 all dicts (and it's subclasses) are ordered.
-    '''
-    pass
-
 
 
 class LinkedListNode(object):
