@@ -3,12 +3,13 @@
 import copy
 import unittest
 
-from wpull.collections import LinkedList, OrderedDefaultDict
+from wpull.collections import LinkedList
+from collections import defaultdict
 
 
 class TestCollections(unittest.TestCase):
     def test_ordered_default_dict(self):
-        mapping = OrderedDefaultDict(lambda: 2)
+        mapping = defaultdict(lambda: 2)
         mapping['a'] += 4
         mapping['b'] += 3
         mapping['c'] += 2
@@ -42,7 +43,7 @@ class TestCollections(unittest.TestCase):
         self.assertEqual(['a', 'c'], list(mapping.keys()))
 
     def test_ordered_default_dict_copy(self):
-        d1 = OrderedDefaultDict()
+        d1 = defaultdict()
         d1['a'] = object()
         d2 = copy.copy(d1)
         self.assertEqual(d1['a'], d2['a'])

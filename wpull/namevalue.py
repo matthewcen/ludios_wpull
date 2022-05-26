@@ -5,9 +5,6 @@ import gettext
 import io
 import textwrap
 
-from wpull.collections import OrderedDefaultDict
-
-
 _ = gettext.gettext
 
 
@@ -20,7 +17,7 @@ class NameValueRecord(collections.abc.MutableMapping):
     '''
     def __init__(self, normalize_overrides=None, encoding='utf-8',
                  wrap_width=None):
-        self._map = OrderedDefaultDict(list)
+        self._map = collections.defaultdict(list)
         self.raw = None
         self.encoding = encoding
         self._normalize_overrides = normalize_overrides
