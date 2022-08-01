@@ -101,9 +101,8 @@ setup_kwargs['install_requires'] = [
     'dnspython',
     'html5-parser',
     'lxml',
-    'namedlist',
-    'sqlalchemy==1.3.24',
-    'tornado==4.5.3',
+    'sqlalchemy==1.4',
+    'tornado',
     'yapsy',
 ]
 

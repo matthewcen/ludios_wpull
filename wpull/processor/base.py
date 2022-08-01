@@ -7,7 +7,7 @@ import logging
 import asyncio
 
 from wpull.backport.logging import StyleAdapter
-from wpull.errors import ServerError, ProtocolError, SSLVerificationError, \
+from wpull.errors import ServerError, ProtocolError, SSLCertVerificationError, \
     NetworkError
 from wpull.pipeline.session import ItemSession
 
@@ -18,7 +18,7 @@ _ = gettext.gettext
 REMOTE_ERRORS = (
     ServerError,
     ProtocolError,
-    SSLVerificationError,
+    SSLCertVerificationError,
     NetworkError,
 )
 '''List of error classes that are errors that occur with a server.'''
@@ -29,8 +29,7 @@ class BaseProcessor(object, metaclass=abc.ABCMeta):
 
     Processors contain the logic for processing requests.
     '''
-    @asyncio.coroutine
-    def process(self, item_session: ItemSession):
+    async def process(self, item_session: ItemSession):
         '''Process an URL Item.
 
         Args:

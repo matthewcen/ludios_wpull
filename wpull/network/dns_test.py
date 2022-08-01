@@ -1,6 +1,7 @@
 # encoding=utf-8
 import socket
 import unittest
+from unittest import IsolatedAsyncioTestCase
 
 import wpull.testing.async_
 from wpull.errors import NetworkError, DNSNotFound
@@ -9,15 +10,14 @@ from wpull.network.dns import Resolver, IPFamilyPreference
 
 DEFAULT_TIMEOUT = 30
 
-
-class TestDNS(wpull.testing.async_.AsyncTestCase):
+class TestDNS(unittest.IsolatedAsyncioTestCase):
     def get_resolver(self, *args, **kwargs):
         return Resolver(*args, **kwargs)
 
     @wpull.testing.async_.async_test()
-    def test_resolver(self):
+    async def test_resolver(self):
         resolver = self.get_resolver()
-        result = yield from resolver.resolve('google.com')
+        result = await resolver.resolve('google.com')
 
         address4 = result.first_ipv4
         address6 = result.first_ipv6
@@ -33,9 +33,9 @@ class TestDNS(wpull.testing.async_.AsyncTestCase):
         self.assertIn(':', address6.ip_address)
 
     @wpull.testing.async_.async_test()
-    def test_resolver_localhost(self):
+    async def test_resolver_localhost(self):
         resolver = self.get_resolver(family=IPFamilyPreference.ipv4_only)
-        result = yield from resolver.resolve('localhost')
+        result = await resolver.resolve('localhost')
 
         address4 = result.first_ipv4
         address6 = result.first_ipv6
@@ -47,9 +47,9 @@ class TestDNS(wpull.testing.async_.AsyncTestCase):
         self.assertFalse(address6)
 
     @wpull.testing.async_.async_test()
-    def test_resolver_ip_address(self):
+    async def test_resolver_ip_address(self):
         resolver = self.get_resolver()
-        result = yield from resolver.resolve('127.0.0.1')
+        result = await resolver.resolve('127.0.0.1')
         address4 = result.first_ipv4
 
         self.assertEqual(socket.AF_INET, address4.family)
@@ -58,45 +58,45 @@ class TestDNS(wpull.testing.async_.AsyncTestCase):
     # TODO: figure out a good way to test other than disconnecting network
     @unittest.expectedFailure
     @wpull.testing.async_.async_test()
-    def test_resolver_timeout(self):
+    async def test_resolver_timeout(self):
         resolver = Resolver(timeout=0.1)
 
         with self.assertRaises(NetworkError):
-            yield from resolver.resolve('google.com')
+            await resolver.resolve('google.com')
 
     @wpull.testing.async_.async_test()
-    def test_resolver_fail(self):
+    async def test_resolver_fail(self):
         resolver = self.get_resolver()
 
         with self.assertRaises(DNSNotFound):
-            yield from resolver.resolve('test.invalid')
+            await resolver.resolve('test.invalid')
 
     @wpull.testing.async_.async_test()
-    def test_resolver_fail_ipv6(self):
+    async def test_resolver_fail_ipv6(self):
         resolver = self.get_resolver(family=IPFamilyPreference.ipv6_only)
 
         with self.assertRaises(DNSNotFound):
-            yield from resolver.resolve('test.invalid')
+            await resolver.resolve('test.invalid')
 
     @wpull.testing.async_.async_test()
-    def test_resolver_hyphen(self):
+    async def test_resolver_hyphen(self):
         resolver = self.get_resolver()
-        yield from resolver.resolve('-kol.deviantart.com')
+        await resolver.resolve('-kol.deviantart.com')
 
     @wpull.testing.async_.async_test()
-    def test_resolver_rotate_cache(self):
+    async def test_resolver_rotate_cache(self):
         resolver = self.get_resolver(rotate=True, cache=Resolver.new_cache())
 
         for dummy in range(5):
             # FIXME: test if actual result is changed
-            yield from resolver.resolve('localhost')
+            await resolver.resolve('localhost')
 
 
 class TestPythonOnlyDNS(TestDNS):
     @wpull.testing.async_.async_test()
-    def test_dns_info_text_format(self):
+    async def test_dns_info_text_format(self):
         resolver = self.get_resolver()
-        result = yield from resolver.resolve('google.com')
+        result = await resolver.resolve('google.com')
 
         dns_info = result.dns_infos[0]
         text = dns_info.to_text_format()
@@ -113,7 +113,7 @@ class TestNoPythonDNS(TestDNS):
         return resolver
 
     @wpull.testing.async_.async_test()
-    def test_resolver_hyphen(self):
+    async def test_resolver_hyphen(self):
         resolver = self.get_resolver()
         with self.assertRaises(DNSNotFound):
-            yield from resolver.resolve('-kol.deviantart.com')
+            await resolver.resolve('-kol.deviantart.com')

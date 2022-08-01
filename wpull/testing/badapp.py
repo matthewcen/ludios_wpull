@@ -17,10 +17,9 @@ import time
 import zlib
 
 import tornado.ioloop
-from tornado.testing import AsyncTestCase as TornadoAsyncTestCase
+from tornado.testing import AsyncTestCase
 
 from gzip import GzipFile
-from wpull.testing.async_ import AsyncTestCase
 
 
 _logger = logging.getLogger(__name__)
@@ -644,17 +643,9 @@ class Server(threading.Thread):
         return self._port
 
 
-class BadAppTestCase(AsyncTestCase, TornadoAsyncTestCase):
-    def get_new_ioloop(self):
-        tornado.ioloop.IOLoop.configure(
-            'wpull.testing.async_.TornadoAsyncIOLoop',
-            event_loop=self.event_loop)
-        ioloop = tornado.ioloop.IOLoop()
-        return ioloop
-
+class BadAppTestCase(AsyncTestCase):
     def setUp(self):
         AsyncTestCase.setUp(self)
-        TornadoAsyncTestCase.setUp(self)
         self.http_server = Server(enable_ssl=self.get_protocol() == 'https')
         self.http_server.start()
         self.http_server.started_event.wait(timeout=5.0)
@@ -675,7 +666,6 @@ class BadAppTestCase(AsyncTestCase, TornadoAsyncTestCase):
         self.http_server.stop()
         self.http_server.join(timeout=5)
         AsyncTestCase.tearDown(self)
-        TornadoAsyncTestCase.tearDown(self)
 
 
 class SSLBadAppTestCase(BadAppTestCase):
