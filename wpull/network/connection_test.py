@@ -52,10 +52,7 @@ class TestConnection(BadAppTestCase):
             ('127.0.0.1', self.get_http_port()), 'localhost')
 
         async def mock_func():
-            if sys.version_info < (3, 3):
-                raise socket.error(123, 'Mock error')
-            else:
-                raise ConnectionError(123, 'Mock error')
+            raise ConnectionError(123, 'Mock error')
 
         with self.assertRaises(NetworkError):
             await connection.run_network_operation(mock_func())
@@ -66,10 +63,7 @@ class TestConnection(BadAppTestCase):
             ('127.0.0.1', self.get_http_port()), 'localhost')
 
         async def mock_func():
-            if sys.version_info < (3, 3):
-                raise socket.error(123, 'Mock error')
-            else:
-                raise ConnectionError(123, 'Mock error')
+            raise ConnectionError(123, 'Mock error')
 
         with self.assertRaises(NetworkError):
             await connection.run_network_operation(mock_func())
