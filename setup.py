@@ -106,12 +106,9 @@ setup_kwargs['install_requires'] = [
     'yapsy',
 ]
 
-if sys.version_info < (3, 7):
-    setup_kwargs['install_requires'].append('typing')
-
-
 if __name__ == '__main__':
     if sys.version_info[0] < 3:
         raise Exception('Sorry, Python 2 is not supported.')
-
+    if sys.version_info < (3, 10):
+        raise Exception('Sorry, Python 3.10 or higher is required')
     setup(**setup_kwargs)

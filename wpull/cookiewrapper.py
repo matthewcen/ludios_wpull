@@ -6,10 +6,6 @@ import sys
 import urllib.request
 
 
-if sys.version_info[0] == 2:
-    import mimetools
-
-
 def convert_http_request(request, referrer_host=None):
     '''Convert a HTTP request.
 
@@ -44,13 +40,9 @@ class HTTPResponseInfoWrapper(object):
         '''Return the header fields as a Message:
 
         Returns:
-            Message: An instance of :class:`email.message.Message`. If
-            Python 2, returns an instance of :class:`mimetools.Message`.
+            Message: An instance of :class:`email.message.Message`.
         '''
-        if sys.version_info[0] == 2:
-            return mimetools.Message(io.StringIO(str(self._response.fields)))
-        else:
-            return email.message_from_string(str(self._response.fields))
+        return email.message_from_string(str(self._response.fields))
 
 
 class CookieJarWrapper(object):
