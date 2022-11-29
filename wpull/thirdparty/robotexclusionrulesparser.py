@@ -79,20 +79,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import sys
-PY_MAJOR_VERSION = sys.version_info[0]
 
-if PY_MAJOR_VERSION < 3:
-    from urlparse import urlparse as urllib_urlparse
-    from urlparse import urlunparse as urllib_urlunparse
-    from urllib import unquote as urllib_unquote
-    import urllib2 as urllib_request
-    import urllib2 as urllib_error
-else:
-    import urllib.request as urllib_request
-    import urllib.error as urllib_error
-    from urllib.parse import unquote as urllib_unquote
-    from urllib.parse import urlparse as urllib_urlparse
-    from urllib.parse import urlunparse as urllib_urlunparse
+import urllib.request as urllib_request
+import urllib.error as urllib_error
+from urllib.parse import unquote as urllib_unquote
+from urllib.parse import urlparse as urllib_urlparse
+from urllib.parse import urlunparse as urllib_urlunparse
 
 import re
 import time
@@ -141,7 +133,7 @@ def _raise_error(error, message):
     # I have to exec() this code because the Python 2 syntax is invalid
     # under Python 3 and vice-versa.
     s = "raise "
-    s += "error, message" if (PY_MAJOR_VERSION == 2) else "error(message)" 
+    s += "error(message)" 
         
     exec(s)
 
@@ -208,11 +200,7 @@ class _Ruleset(object):
         self.crawl_delay = None
 
     def __str__(self):
-        s = self.__unicode__()
-        if PY_MAJOR_VERSION == 2:
-            s = s.encode("utf-8")
-
-        return s
+        return self.__unicode__()
 
     def __unicode__(self):
         d = { self.ALLOW : "Allow", self.DISALLOW : "Disallow" }
@@ -362,24 +350,6 @@ class RobotExclusionRulesParser(object):
         parameter can be GYM2008 (the default) or MK1996 for strict adherence 
         to the traditional standard.
         """        
-        if PY_MAJOR_VERSION < 3:
-            # The robot rules are stored internally as Unicode. The two lines 
-            # below ensure that the parameters passed to this function are 
-            # also Unicode. If those lines were not present and the caller 
-            # passed a non-Unicode user agent or URL string to this function,
-            # Python would silently convert it to Unicode before comparing it
-            # to the robot rules. Such conversions use the default encoding 
-            # (usually US-ASCII) and if the string couldn't be converted using
-            # that encoding, Python would raise a UnicodeError later on in the
-            # guts of this code which would be confusing. 
-            # Converting the strings to Unicode here doesn't make the problem
-            # go away but it does make the conversion explicit so that 
-            # failures are easier to understand. 
-            if not isinstance(user_agent, unicode):
-                user_agent = user_agent.decode()
-            if not isinstance(url, unicode):
-                url = url.decode()
-        
         if syntax not in (MK1996, GYM2008):
             _raise_error(ValueError, "Syntax must be MK1996 or GYM2008")
     
@@ -394,10 +364,6 @@ class RobotExclusionRulesParser(object):
         """Returns a float representing the crawl delay specified for this 
         user agent, or None if the crawl delay was unspecified or not a float.
         """
-        # See is_allowed() comment about the explicit unicode conversion.
-        if (PY_MAJOR_VERSION < 3) and (not isinstance(user_agent, unicode)):
-            user_agent = user_agent.decode()
-    
         for ruleset in self.__rulesets:
             if ruleset.does_user_agent_match(user_agent):
                 return ruleset.crawl_delay
@@ -516,8 +482,7 @@ class RobotExclusionRulesParser(object):
             # Uh-oh. I punt this up to the caller. 
             _raise_error(urllib_error.URLError, self._response_code)
 
-        if ((PY_MAJOR_VERSION == 2) and isinstance(content, str)) or \
-           ((PY_MAJOR_VERSION > 2)  and (not isinstance(content, str))):
+        if not isinstance(content, str):
             # This ain't Unicode yet! It needs to be.
             
             # Unicode decoding errors are another point of failure that I punt 
@@ -545,8 +510,7 @@ class RobotExclusionRulesParser(object):
         self._sitemaps = [ ]
         self.__rulesets = [ ]
         
-        if (PY_MAJOR_VERSION > 2) and (isinstance(s, bytes) or isinstance(s, bytearray)) or \
-           (PY_MAJOR_VERSION == 2) and (not isinstance(s, unicode)):            
+        if (isinstance(s, bytes) or isinstance(s, bytearray)):            
             s = s.decode("iso-8859-1")
     
         # Normalize newlines.
@@ -661,8 +625,6 @@ class RobotExclusionRulesParser(object):
     
     def __str__(self):
         s = self.__unicode__()
-        if PY_MAJOR_VERSION == 2:
-            s = s.encode("utf-8")
 
         return s
 
@@ -671,12 +633,7 @@ class RobotExclusionRulesParser(object):
             s = "Sitemaps: %s\n\n" % self._sitemaps
         else: 
             s = ""
-        if PY_MAJOR_VERSION < 3:
-            s = unicode(s)
-        # I also need to string-ify each ruleset. The function for doing so
-        # varies under Python 2/3. 
-        stringify = (unicode if (PY_MAJOR_VERSION == 2) else str)
-        return s + '\n'.join( [stringify(ruleset) for ruleset in self.__rulesets] )
+        return s + '\n'.join( [str(ruleset) for ruleset in self.__rulesets] )
 
 
 class RobotFileParserLookalike(RobotExclusionRulesParser):
