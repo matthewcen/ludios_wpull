@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools >= 58.0"]
+
+[project]
+name = "wpull"
+description = "Wget-compatible web downloader and crawler."
+authors = [{name = "Christopher Foo", email = "chris.foo@gmail.co"}]
+readme = "README.orig.rst"
+version = "4.0.0"
+license = { file = "LICENSE.txt" }
+classifiers=[
+    'Development Status :: 5 - Production/Stable',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Programming Language :: Python :: 3',
+    'Topic :: Internet :: File Transfer Protocol (FTP)',
+    'Topic :: Internet :: WWW/HTTP',
+    'Topic :: System :: Archiving',
+]
+requires-python = ">=3.9"
+dependencies = [
+    "chardet>=5.0.0",
+    "dnspython",
+    "html5-parser",
+    "lxml",
+    "psutil",
+    "sqlalchemy==1.4",
+    "tornado",
+    "yapsy"
+]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx-argparse",
+    "sphinxcontrib-napoleon"
+]
+
+[tool.setuptools]
+packages = ["wpull"]
+
+[project.urls]
+Source = "https://github.com/chfoo/wpull"
+
+[project.scripts]
+wpull = "wpull.application.main:main"
