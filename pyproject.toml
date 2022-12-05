@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools >= 58.0"]
+requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -36,7 +36,31 @@ docs = [
 ]
 
 [tool.setuptools]
-packages = ["wpull"]
+packages = [
+    "wpull",
+    "wpull.application",
+    "wpull.application.plugins",
+    "wpull.application.tasks",
+    "wpull.backport",
+    "wpull.database",
+    "wpull.document",
+    "wpull.document.htmlparse",
+    "wpull.driver",
+    "wpull.network",
+    "wpull.pipeline",
+    "wpull.processor",
+    "wpull.processor.coprocessor",
+    "wpull.protocol.abstract",
+    "wpull.protocol.ftp",
+    "wpull.protocol.ftp.ls",
+    "wpull.protocol.http",
+    "wpull.proxy",
+    "wpull.scraper",
+    "wpull.testing",
+    "wpull.testing.integration",
+    "wpull.thirdparty",
+    "wpull.warc",
+    ]
 
 [project.urls]
 Source = "https://github.com/chfoo/wpull"
