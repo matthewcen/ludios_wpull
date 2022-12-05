@@ -4,14 +4,12 @@ from typing import Optional
 
 from wpull.application.factory import Factory
 from wpull.pipeline.pipeline import ItemSource
-import wpull.version
 import wpull.util
 
 
 class AppSession(object):
     def __init__(self, factory: Factory, args, stderr):
-        self.default_user_agent = 'Wpull/{0} (gzip)'.format(
-            wpull.version.__version__)
+        self.default_user_agent = 'Wpull (gzip)'
         self.factory = factory
         self.args = args
         self.stderr = stderr

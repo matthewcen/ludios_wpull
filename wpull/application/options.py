@@ -10,7 +10,6 @@ import sys
 from wpull.backport.logging import BraceMessage as __
 import wpull.resmon
 import wpull.string
-import wpull.version
 
 
 _ = gettext.gettext
@@ -208,12 +207,6 @@ class AppArgumentParser(argparse.ArgumentParser):
 
     def _add_startup_args(self):
         group = self.add_argument_group(_('startup'))
-        group.add_argument(
-            '-V',
-            '--version',
-            action='version',
-            version=wpull.version.__version__
-        )
 #         group.add_argument(
 #             '-b',
 #             '--background',

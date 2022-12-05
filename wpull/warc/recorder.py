@@ -24,7 +24,6 @@ from wpull.protocol.http.client import Session as HTTPSession
 from wpull.protocol.http.request import Request as HTTPRequest
 from wpull.protocol.http.request import Response as HTTPResponse
 import wpull.util
-import wpull.version
 
 
 _logger = StyleAdapter(logging.getLogger(__name__))
@@ -67,8 +66,7 @@ class WARCRecorder(object):
     '''
     CDX_DELIMINATOR = ' '
     '''Default CDX delimiter.'''
-    DEFAULT_SOFTWARE_STRING = 'Wpull/{0} Python/{1}'.format(
-        wpull.version.__version__, wpull.util.python_version()
+    DEFAULT_SOFTWARE_STRING = 'Wpull Python/{0}'.format(wpull.util.python_version()
     )
     '''Default software string.'''
 
