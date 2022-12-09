@@ -7,8 +7,7 @@ import asyncio
 from wpull.errors import ProtocolError, ServerError
 from wpull.protocol.http.request import Request, Response
 from wpull.protocol.http.robots import RobotsTxtChecker, NotInPoolError
-import wpull.testing.async_
-
+from unittest import IsolatedAsyncioTestCase
 
 class MockWebClient(object):
     def __init__(self):
@@ -37,7 +36,7 @@ class MockWebSession(object):
         pass
 
 
-class TestRobots(wpull.testing.async_.AsyncTestCase):
+class TestRobots(IsolatedAsyncioTestCase):
     @wpull.testing.async_.async_test
     def test_fetch_allow(self):
         checker = RobotsTxtChecker(web_client=MockWebClient())

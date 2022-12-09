@@ -3,17 +3,17 @@ from http import cookiejar
 
 import asyncio
 import tornado.web
-from tornado.testing import AsyncHTTPSTestCase, AsyncTestCase
+from unittest import IsolatedAsyncioTestCase
+from wpull.testing.async_ import AsyncHTTPSTestCase
 import tornado.ioloop
 
-# from wpull.testing.async_ import AsyncTestCase
 from wpull.testing.badapp import BadAppTestCase
 from wpull.testing.ftp import FTPTestCase
 from wpull.testing.goodapp import GoodAppTestCase
 from wpull.testing.util import TempDirMixin
 
 
-class AppTestCase(AsyncTestCase, TempDirMixin):
+class AppTestCase(IsolatedAsyncioTestCase, TempDirMixin):
     def setUp(self):
         self._original_cookiejar_debug = cookiejar.debug
         cookiejar.debug = True
@@ -67,13 +67,11 @@ class HTTPSSimpleAppTestCase(AsyncHTTPSTestCase, TempDirMixin):
     #     return ioloop
 
     def setUp(self):
-        # AsyncTestCase.setUp(self)
         AsyncHTTPSTestCase.setUp(self)
         self.set_up_temp_dir()
 
     def tearDown(self):
         AsyncHTTPSTestCase.tearDown(self)
-        # AsyncTestCase.tearDown(self)
         self.tear_down_temp_dir()
 
     def get_app(self):

@@ -10,7 +10,6 @@ from wpull.testing.badapp import BadAppTestCase
 
 
 class TestConnectionPool(BadAppTestCase):
-    @wpull.testing.async_.async_test()
     def test_basic_acquire(self):
         pool = ConnectionPool(max_host_count=2)
 
@@ -26,7 +25,6 @@ class TestConnectionPool(BadAppTestCase):
         yield from pool.release(conn3)
         yield from pool.release(conn4)
 
-    @wpull.testing.async_.async_test()
     def test_session(self):
         pool = ConnectionPool()
 
@@ -42,7 +40,6 @@ class TestConnectionPool(BadAppTestCase):
         self.assertIsInstance(host_pool, HostPool)
         self.assertEqual(1, host_pool.count())
 
-    @wpull.testing.async_.async_test()
     def test_host_max_limit(self):
         pool = ConnectionPool(max_host_count=2)
 
@@ -55,7 +52,6 @@ class TestConnectionPool(BadAppTestCase):
                 0.1
             )
 
-    @wpull.testing.async_.async_test()
     def test_at_host_max_limit_cycling(self):
         pool = ConnectionPool(max_host_count=10, max_count=10)
 
@@ -75,7 +71,6 @@ class TestConnectionPool(BadAppTestCase):
         self.assertIsInstance(connection_pool_entry, HostPool)
         self.assertGreaterEqual(10, connection_pool_entry.count())
 
-    @wpull.testing.async_.async_test()
     def test_over_host_max_limit_cycling(self):
         pool = ConnectionPool(max_host_count=10, max_count=10)
 
@@ -96,7 +91,6 @@ class TestConnectionPool(BadAppTestCase):
         self.assertIsInstance(connection_pool_entry, HostPool)
         self.assertGreaterEqual(10, connection_pool_entry.count())
 
-    @wpull.testing.async_.async_test()
     def test_multiple_hosts(self):
         pool = ConnectionPool(max_host_count=5, max_count=20)
 
@@ -106,7 +100,6 @@ class TestConnectionPool(BadAppTestCase):
             with session as connection:
                 self.assertTrue(connection)
 
-    @wpull.testing.async_.async_test()
     def test_clean(self):
         pool = ConnectionPool(max_host_count=2)
 
@@ -119,7 +112,6 @@ class TestConnectionPool(BadAppTestCase):
 
         self.assertEqual(0, len(pool.host_pools))
 
-    @wpull.testing.async_.async_test()
     def test_connection_pool_release_clean_race_condition(self):
         pool = ConnectionPool(max_host_count=1)
 
@@ -133,7 +125,6 @@ class TestConnectionPool(BadAppTestCase):
         # This line should not KeyError crash:
         yield from pool.release(connection_2)
 
-    @wpull.testing.async_.async_test()
     def test_happy_eyeballs(self):
         connection_factory = functools.partial(Connection, connect_timeout=10)
         resolver = Resolver()

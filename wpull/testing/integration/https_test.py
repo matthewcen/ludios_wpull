@@ -10,7 +10,6 @@ import wpull.testing.async_
 
 
 class TestHTTPSApp(HTTPSSimpleAppTestCase):
-    @wpull.testing.async_.async_test()
     def test_check_certificate(self):
         arg_parser = AppArgumentParser()
         args = arg_parser.parse_args([
@@ -24,7 +23,6 @@ class TestHTTPSApp(HTTPSSimpleAppTestCase):
 
         self.assertEqual(5, exit_code)
 
-    @wpull.testing.async_.async_test()
     def test_https_only(self):
         arg_parser = AppArgumentParser()
         args = arg_parser.parse_args([
@@ -42,7 +40,6 @@ class TestHTTPSApp(HTTPSSimpleAppTestCase):
         self.assertEqual(0, exit_code)
         self.assertEqual(1, builder.factory['Statistics'].files)
 
-    @wpull.testing.async_.async_test()
     def test_ssl_bad_certificate(self):
         arg_parser = AppArgumentParser()
         args = arg_parser.parse_args([

@@ -17,7 +17,6 @@ import wpull.testing.async_
 
 
 class Mixin:
-    @wpull.testing.async_.async_test()
     def test_basic_requests(self):
         proxy_http_client = Client()
         proxy_server = HTTPProxyServer(proxy_http_client)

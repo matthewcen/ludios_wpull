@@ -12,7 +12,6 @@ from wpull.testing.badapp import BadAppTestCase, SSLBadAppTestCase
 
 
 class TestConnection(BadAppTestCase):
-    @wpull.testing.async_.async_test()
     async def test_connection(self):
         connection = Connection(
             ('127.0.0.1', self.get_http_port()), 'localhost')
@@ -24,7 +23,6 @@ class TestConnection(BadAppTestCase):
 
         self.assertTrue(connection.closed())
 
-    @wpull.testing.async_.async_test()
     async def test_mock_connect_socket_error(self):
         connection = Connection(
             ('127.0.0.1', self.get_http_port()), 'localhost')
@@ -35,7 +33,6 @@ class TestConnection(BadAppTestCase):
         with self.assertRaises(NetworkError):
             await connection.run_network_operation(mock_func())
 
-    @wpull.testing.async_.async_test()
     async def test_mock_connect_ssl_error(self):
         connection = Connection(
             ('127.0.0.1', self.get_http_port()), 'localhost')
@@ -46,7 +43,6 @@ class TestConnection(BadAppTestCase):
         with self.assertRaises(NetworkError):
             await connection.run_network_operation(mock_func())
 
-    @wpull.testing.async_.async_test()
     async def test_mock_request_socket_error(self):
         connection = Connection(
             ('127.0.0.1', self.get_http_port()), 'localhost')
@@ -57,7 +53,6 @@ class TestConnection(BadAppTestCase):
         with self.assertRaises(NetworkError):
             await connection.run_network_operation(mock_func())
 
-    @wpull.testing.async_.async_test()
     async def test_mock_request_ssl_error(self):
         connection = Connection(
             ('127.0.0.1', self.get_http_port()), 'localhost')
@@ -68,7 +63,6 @@ class TestConnection(BadAppTestCase):
         with self.assertRaises(NetworkError):
             await connection.run_network_operation(mock_func())
 
-    @wpull.testing.async_.async_test()
     async def test_mock_request_certificate_error(self):
         connection = Connection(
             ('127.0.0.1', self.get_http_port()), 'localhost')
@@ -79,7 +73,6 @@ class TestConnection(BadAppTestCase):
         with self.assertRaises(SSLCertVerificationError):
             await connection.run_network_operation(mock_func())
 
-    @wpull.testing.async_.async_test()
     async def test_mock_request_unknown_ca_error(self):
         connection = Connection(
             ('127.0.0.1', self.get_http_port()), 'localhost')
@@ -90,14 +83,12 @@ class TestConnection(BadAppTestCase):
         with self.assertRaises(SSLCertVerificationError):
             await connection.run_network_operation(mock_func())
 
-    @wpull.testing.async_.async_test()
     async def test_connect_timeout(self):
         connection = Connection(('10.0.0.0', 1), connect_timeout=2)
 
         with self.assertRaises(NetworkTimedOut):
             await connection.connect()
 
-    @wpull.testing.async_.async_test()
     async def test_read_timeout(self):
         connection = Connection(('127.0.0.1', self.get_http_port()),
                                 timeout=0.5)
@@ -125,7 +116,6 @@ class TestConnection(BadAppTestCase):
 
                 bytes_left -= len(data)
 
-    @wpull.testing.async_.async_test()
     async def test_sock_reuse(self):
         connection1 = Connection(('127.0.0.1', self.get_http_port()))
         await connection1.connect()
@@ -143,7 +133,6 @@ class TestConnection(BadAppTestCase):
 
 
 class TestConnectionSSL(SSLBadAppTestCase):
-    @wpull.testing.async_.async_test()
     async def test_start_tls(self):
         connection = Connection(('127.0.0.1', self.get_http_port()), timeout=1)
 

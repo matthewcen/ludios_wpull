@@ -4,7 +4,7 @@ import socket
 
 import asyncio
 
-from wpull.testing.async_ import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase
 
 
 _logger = logging.getLogger(__name__)
@@ -326,12 +326,12 @@ class FTPSession(object):
         self.evil_flags.add('bad_pasv_addr')
 
 
-class FTPTestCase(AsyncTestCase):
+class FTPTestCase(IsolatedAsyncioTestCase):
     def server_port(self):
         return self.sock.getsockname()[1]
 
     def setUp(self):
-        AsyncTestCase.setUp(self)
+        super().setUp()
         self.server = MockFTPServer()
         self.sock = socket.socket()
         self.sock.bind(('127.0.0.1', 0))
@@ -341,7 +341,7 @@ class FTPTestCase(AsyncTestCase):
 
     def tearDown(self):
         self.server_handle.close()
-        AsyncTestCase.tearDown(self)
+        super().tearDown()
 
     def get_url(self, path, username='', password=''):
         if username or password:

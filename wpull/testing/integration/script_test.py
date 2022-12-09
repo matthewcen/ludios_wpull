@@ -7,7 +7,6 @@ import wpull.testing.async_
 
 
 class TestScriptGoodApp(HTTPGoodAppTestCase):
-    @wpull.testing.async_.async_test()
     def test_app_empty_plugin_script(self):
         arg_parser = AppArgumentParser()
         filename = os.path.join(os.path.dirname(__file__),
@@ -22,7 +21,6 @@ class TestScriptGoodApp(HTTPGoodAppTestCase):
 
         self.assertEqual(0, exit_code)
 
-    @wpull.testing.async_.async_test()
     def test_app_python_plugin_script(self):
         arg_parser = AppArgumentParser()
         filename = os.path.join(os.path.dirname(__file__),
@@ -56,7 +54,6 @@ class TestScriptGoodApp(HTTPGoodAppTestCase):
         # duration should be virtually 0 but account for slowness on travis ci
         self.assertGreater(10.0, stats.duration)
     
-    @wpull.testing.async_.async_test()
     def test_app_python_script_stop(self):
         arg_parser = AppArgumentParser()
         filename = os.path.join(os.path.dirname(__file__),

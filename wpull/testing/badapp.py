@@ -17,7 +17,7 @@ import time
 import zlib
 
 import tornado.ioloop
-from tornado.testing import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase
 
 from gzip import GzipFile
 
@@ -643,9 +643,9 @@ class Server(threading.Thread):
         return self._port
 
 
-class BadAppTestCase(AsyncTestCase):
+class BadAppTestCase(IsolatedAsyncioTestCase):
     def setUp(self):
-        AsyncTestCase.setUp(self)
+        super().setUp()
         self.http_server = Server(enable_ssl=self.get_protocol() == 'https')
         self.http_server.start()
         self.http_server.started_event.wait(timeout=5.0)
@@ -665,7 +665,7 @@ class BadAppTestCase(AsyncTestCase):
     def tearDown(self):
         self.http_server.stop()
         self.http_server.join(timeout=5)
-        AsyncTestCase.tearDown(self)
+        super().tearDown()
 
 
 class SSLBadAppTestCase(BadAppTestCase):

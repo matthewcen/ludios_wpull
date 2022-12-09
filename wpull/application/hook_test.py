@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 from wpull.application.hook import HookDispatcher, HookAlreadyConnectedError, \
     HookDisconnected, EventDispatcher, HookableMixin
 from wpull.application.plugin import WpullPlugin, event, hook
-from wpull.testing.async_ import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase
 import wpull.testing.async_
 
 
@@ -43,8 +43,7 @@ class MyPluginEventAsHook(WpullPlugin):
         pass
 
 
-class TestHook(AsyncTestCase):
-    @wpull.testing.async_.async_test()
+class TestHook(IsolatedAsyncioTestCase):
     def test_hook_dispatcher(self):
         hook = HookDispatcher()
 

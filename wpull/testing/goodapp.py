@@ -7,12 +7,10 @@ import logging
 import os.path
 import time
 
-from tornado.testing import AsyncHTTPTestCase, AsyncHTTPSTestCase
 from tornado.web import HTTPError
 import tornado.web
-
-from wpull.testing.async_ import AsyncTestCase
-
+from unittest import IsolatedAsyncioTestCase
+from wpull.testing.async_ import AsyncHTTPTestCase, AsyncHTTPSTestCase
 
 _logger = logging.getLogger(__name__)
 
@@ -233,16 +231,17 @@ class GoodApp(tornado.web.Application):
         )
 
 
-class GoodAppTestCase(AsyncTestCase, AsyncHTTPTestCase):
-    def get_new_ioloop(self):
-        tornado.ioloop.IOLoop.configure(
-            'wpull.testing.async_.TornadoAsyncIOLoop',
-            event_loop=self.event_loop)
-        ioloop = tornado.ioloop.IOLoop()
-        return ioloop
+class GoodAppTestCase(AsyncHTTPTestCase):
+    # def get_new_ioloop(self):
+    #     tornado.ioloop.IOLoop.configure(
+    #         'wpull.testing.async_.TornadoAsyncIOLoop',
+    #         event_loop=self.event_loop)
+    #     ioloop = tornado.ioloop.IOLoop()
+    #     return ioloop
 
     def setUp(self):
-        AsyncTestCase.setUp(self)
+        # Multiple inheritance requires explicit parent Class names
+        IsolatedAsyncioTestCase.setUp(self)
         AsyncHTTPTestCase.setUp(self)
         # Wait for the app to start up properly (for good luck).
         time.sleep(0.5)
@@ -251,16 +250,17 @@ class GoodAppTestCase(AsyncTestCase, AsyncHTTPTestCase):
         return GoodApp()
 
 
-class GoodAppHTTPSTestCase(AsyncTestCase, AsyncHTTPSTestCase):
-    def get_new_ioloop(self):
-        tornado.ioloop.IOLoop.configure(
-            'wpull.testing.async_.TornadoAsyncIOLoop',
-            event_loop=self.event_loop)
-        ioloop = tornado.ioloop.IOLoop()
-        return ioloop
+class GoodAppHTTPSTestCase(AsyncHTTPSTestCase):
+    # def get_new_ioloop(self):
+    #     tornado.ioloop.IOLoop.configure(
+    #         'wpull.testing.async_.TornadoAsyncIOLoop',
+    #         event_loop=self.event_loop)
+    #     ioloop = tornado.ioloop.IOLoop()
+    #     return ioloop
 
     def setUp(self):
-        AsyncTestCase.setUp(self)
+        # Multiple inheritance requires explicit parent Class names
+        IsolatedAsyncioTestCase.setUp(self)
         AsyncHTTPSTestCase.setUp(self)
         # Wait for the app to start up properly (for good luck).
         time.sleep(0.5)

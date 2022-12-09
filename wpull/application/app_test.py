@@ -1,7 +1,7 @@
 import asyncio
 
 from typing import Optional
-from tornado.testing import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase
 
 import wpull.testing.async_
 from wpull.application.app import Application
@@ -27,8 +27,7 @@ class MyItemSource(ItemSource[int]):
             return self.values.pop(0)
 
 
-class TestAppliation(AsyncTestCase):
-    @wpull.testing.async_.async_test()
+class TestAppliation(IsolatedAsyncioTestCase):
     async def test_simple(self):
         source1 = MyItemSource([1, 2, 3])
         source2 = MyItemSource([4, 5, 6])
@@ -42,7 +41,6 @@ class TestAppliation(AsyncTestCase):
 
         self.assertEqual(0, exit_code)
 
-    @wpull.testing.async_.async_test()
     async def test_exit_codes(self):
         for error_class, expected_exit_code in Application.ERROR_CODE_MAP.items():
             with self.subTest(error_class):
@@ -59,7 +57,6 @@ class TestAppliation(AsyncTestCase):
 
                 self.assertEqual(expected_exit_code, exit_code)
 
-    @wpull.testing.async_.async_test()
     async def test_pipeline_skipping(self):
         source1 = MyItemSource([1, 2, 3])
         source2 = MyItemSource([4, 5, 6])
