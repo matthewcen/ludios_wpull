@@ -10,7 +10,6 @@ import string
 import urllib.parse
 import posixpath
 
-from wpull.backport.logging import BraceMessage as __
 import wpull.string
 
 
@@ -408,9 +407,7 @@ def parse_url_or_log(url, encoding='utf-8'):
     try:
         url_info = URLInfo.parse(url, encoding=encoding)
     except ValueError as error:
-        _logger.warning(__(
-            _('Unable to parse URL ‘{url}’: {error}.'),
-            url=wpull.string.printable_str(url), error=error))
+        _logger.warning(f"Unable to parse URL ‘{wpull.string.printable_str(url)}’: {error}.")
     else:
         return url_info
 

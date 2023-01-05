@@ -6,7 +6,6 @@ import logging
 
 import asyncio
 
-from wpull.backport.logging import BraceMessage as __
 from wpull.errors import ProtocolError, NetworkError
 
 

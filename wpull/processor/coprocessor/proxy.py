@@ -6,7 +6,6 @@ from typing import Optional, cast
 
 import wpull.string
 from wpull.application.hook import Actions
-from wpull.backport.logging import BraceMessage as __
 from wpull.database.base import BaseURLTable
 from wpull.pipeline.app import AppSession
 from wpull.pipeline.item import URLRecord, Status
@@ -119,10 +118,7 @@ class ProxyCoprocessorSession(object):
         self._file_writer_session.process_request(request)
 
         if verdict:
-            _logger.info(__(
-                _('Fetching ‘{url}’.'),
-                url=request.url_info.url
-            ))
+            _logger.info(f"Fetching ‘{request.url_info.url}’.")
 
         return verdict
 
@@ -143,17 +139,7 @@ class ProxyCoprocessorSession(object):
         request = self._item_session.request
         response = self._item_session.response
 
-        _logger.info(__(
-            _('Fetched ‘{url}’: {status_code} {reason}. '
-              'Length: {content_length} [{content_type}].'),
-            url=request.url,
-            status_code=response.status_code,
-            reason=wpull.string.printable_str(response.reason),
-            content_length=wpull.string.printable_str(
-                response.fields.get('Content-Length', _('none'))),
-            content_type=wpull.string.printable_str(
-                response.fields.get('Content-Type', _('none'))),
-        ))
+        _logger.info(f"Fetched ‘{request.url}’: {response.status_code} {wpull.string.printable_str(response.reason)}. Length: {wpull.string.printable_str(response.fields.get('Content-Length', 'none'))} [{wpull.string.printable_str(response.fields.get('Content-Type', 'none'))}].")
 
         self._result_rule.handle_response(self._item_session)
 

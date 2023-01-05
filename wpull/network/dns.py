@@ -17,7 +17,6 @@ from typing import List, Sequence, Optional, Iterable, NamedTuple
 
 from wpull.application.plugin import PluginFunctions, hook_interface, \
     event_interface
-from wpull.backport.logging import BraceMessage as __
 from wpull.cache import FIFOCache
 from wpull.errors import DNSNotFound, NetworkError
 from wpull.application.hook import HookableMixin, HookDisconnected
@@ -168,7 +167,7 @@ class Resolver(HookableMixin):
         Coroutine.
         '''
 
-        _logger.debug(__('Lookup address {0}.', host))
+        _logger.debug(f"Lookup address {host}.")
 
         try:
             host = self.hook_dispatcher.call(PluginFunctions.resolve_dns, host
@@ -180,7 +179,7 @@ class Resolver(HookableMixin):
 
         if self._cache and cache_key in self._cache:
             resolve_result = self._cache[cache_key]
-            _logger.debug(__('Return by cache {0}.', resolve_result))
+            _logger.debug(f"Return by cache {resolve_result}.")
 
             if self._rotate:
                 resolve_result.rotate()
@@ -222,7 +221,7 @@ class Resolver(HookableMixin):
             results = await self._getaddrinfo(host, family)
             address_infos.extend(self._convert_addrinfo(results))
 
-        _logger.debug(__('Resolved addresses: {0}.', address_infos))
+        _logger.debug(f"Resolved addresses: {address_infos}.")
 
         resolve_result = ResolveResult(address_infos, dns_infos)
 

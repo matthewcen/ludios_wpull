@@ -14,7 +14,6 @@ import asyncio
 from typing import Optional, Iterable
 
 from wpull.application.plugin import WpullPlugin, PluginFunctionCategory
-from wpull.backport.logging import BraceMessage as __
 
 _ = gettext.gettext
 _logger = logging.getLogger(__name__)

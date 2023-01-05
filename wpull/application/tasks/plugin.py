@@ -15,7 +15,6 @@ from yapsy.PluginManager import PluginManager
 
 from wpull.application.hook import HookableMixin
 from wpull.application.plugin import WpullPlugin
-from wpull.backport.logging import BraceMessage as __
 from wpull.pipeline.pipeline import ItemTask, PipelineSeries
 from wpull.pipeline.app import AppSession
 from wpull.util import get_package_filename
@@ -86,17 +85,9 @@ class PluginSetupTask(ItemTask[AppSession]):
 
         for plugin_info in session.plugin_manager.getAllPlugins():
             if plugin_info.path.startswith(internal_plugin_path):
-                _logger.debug(__(
-                    _('Found plugin {name} from {filename}.'),
-                    filename=plugin_info.path,
-                    name=plugin_info.name
-                ))
+                _logger.debug(f"Found plugin {plugin_info.name} from {plugin_info.path}.")
             else:
-                _logger.info(__(
-                    _('Found plugin {name} from {filename}.'),
-                    filename=plugin_info.path,
-                    name=plugin_info.name
-                ))
+                _logger.info(f"Found plugin {plugin_info.name} from {plugin_info.path}.")
 
             plugin_info.plugin_object.app_session = session
 

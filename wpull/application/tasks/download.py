@@ -5,7 +5,6 @@ import functools
 
 import tornado.netutil
 
-from wpull.backport.logging import BraceMessage as __
 from wpull.cookie import BetterMozillaCookieJar
 from wpull.namevalue import NameValueRecord
 from wpull.pipeline.pipeline import ItemTask
@@ -190,7 +189,7 @@ class ClientSetupTask(ItemTask[AppSession]):
 
         cookie_jar.set_policy(policy)
 
-        _logger.debug(__('Loaded cookies: {0}', list(cookie_jar)))
+        _logger.debug(f"Loaded cookies: {list(cookie_jar)}")
 
         cookie_jar_wrapper = session.factory.new(
             'CookieJarWrapper',

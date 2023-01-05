@@ -11,7 +11,6 @@ import ssl
 
 import tornado.netutil
 from typing import Optional, Union
-from wpull.backport.logging import BraceMessage as __
 from wpull.errors import NetworkError, ConnectionRefused, \
     NetworkTimedOut, SSLCertVerificationError
 
@@ -167,7 +166,7 @@ class BaseConnection(object):
 
     async def connect(self):
         '''Establish a connection.'''
-        _logger.debug(__('Connecting to {0}.', self._address))
+        _logger.debug(f"Connecting to {self._address}.")
 
         if self._state != ConnectionState.ready:
             raise Exception('Closed connection must be reset before reusing.')

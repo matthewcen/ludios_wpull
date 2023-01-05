@@ -7,7 +7,6 @@ import os
 
 import asyncio
 
-from wpull.backport.logging import BraceMessage as __
 import wpull.body
 from wpull.errors import ServerError, ProtocolError
 from wpull.protocol.http.request import Request, Response
@@ -120,15 +119,12 @@ class RobotsTxtChecker(object):
         try:
             self._robots_txt_pool.load_robots_txt(url_info, data)
         except ValueError:
-            _logger.warning(__(
-                _('Failed to parse {url} for robots exclusion rules. '
-                  'Ignoring.'), url_info.url))
+            _logger.warning(f"Failed to parse {url_info.url} for robots exclusion rules. Ignoring.")
             self._accept_as_blank(url_info)
         else:
-            _logger.debug(__('Got a good robots.txt for {0}.',
-                             url_info.url))
+            _logger.debug(f"Got a good robots.txt for {url_info.url}.")
 
     def _accept_as_blank(self, url_info: URLInfo):
         '''Mark the URL as OK in the pool.'''
-        _logger.debug(__('Got empty robots.txt for {0}.', url_info.url))
+        _logger.debug(f"Got empty robots.txt for {url_info.url}.")
         self._robots_txt_pool.load_robots_txt(url_info, '')

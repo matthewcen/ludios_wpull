@@ -12,7 +12,6 @@ import asyncio
 import errno
 
 from wpull.application.hook import HookableMixin, HookDisconnected
-from wpull.backport.logging import BraceMessage as __
 from wpull.body import Body
 from wpull.errors import ProtocolError, NetworkError
 from wpull.protocol.http.client import Client, Session
@@ -123,7 +122,7 @@ class HTTPProxySession(HookableMixin):
             await self._process_request(request)
 
     async def _process_request(self, request: Request):
-        _logger.debug(__('Got request {0}', request))
+        _logger.debug("Got request {request}")
 
         if request.method == 'CONNECT':
             self._reject_request('CONNECT is intentionally not supported')
@@ -135,10 +134,7 @@ class HTTPProxySession(HookableMixin):
             request.url = request.url.replace('http://', 'https://', 1)
 
         if 'Upgrade' in request.fields.get('Connection', ''):
-            _logger.warning(__(
-                _('Connection Upgrade not supported for {}'),
-                request.url
-            ))
+            _logger.warning(f"Connection Upgrade not supported for {request.url}")
             self._reject_request('Upgrade not supported')
             return
 
@@ -205,7 +201,7 @@ class HTTPProxySession(HookableMixin):
         for dummy in range(100):
             line = await self._reader.readline()
 
-            _logger.debug(__('Got line {0}', line))
+            _logger.debug(f"Got line {line}")
 
             if line[-1:] != b'\n':
                 return

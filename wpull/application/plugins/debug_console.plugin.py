@@ -7,7 +7,6 @@ import tornado.web
 import tornado.httpserver
 
 from wpull.application.plugin import WpullPlugin
-from wpull.backport.logging import BraceMessage as __
 from wpull.debug import DebugConsoleHandler
 
 _logger = logging.getLogger(__name__)
@@ -31,9 +30,5 @@ class DebugConsolePlugin(WpullPlugin):
         http_server = tornado.httpserver.HTTPServer(application)
         http_server.add_socket(sock)
 
-        _logger.warning(__(
-            _('Opened a debug console at localhost:{port}.'),
-            port=sock.getsockname()[1]
-        ))
-
+        _logger.warning(f"Opened a debug console at localhost:{sock.getsockname()[1]}.")
         atexit.register(sock.close)

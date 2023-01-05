@@ -1,11 +1,9 @@
 import gettext
 import logging
 
-from wpull.backport.logging import BraceMessage as __
 from wpull.application.plugin import WpullPlugin
 
 _logger = logging.getLogger(__name__)
-_ = gettext.gettext
 
 
 class ArgWarningPlugin(WpullPlugin):
@@ -35,13 +33,8 @@ class ArgWarningPlugin(WpullPlugin):
                 enabled_options.append(option_name)
 
         if enabled_options:
-            _logger.warning(__(
-                _('The following unsafe options are enabled: {list}.'),
-                list=enabled_options
-            ))
-            _logger.warning(
-                _('The use of unsafe options may lead to unexpected behavior '
-                  'or file corruption.'))
+            _logger.warning(f"The following unsafe options are enabled: {enabled_options}.")
+            _logger.warning("The use of unsafe options may lead to unexpected behavior or file corruption.")
 
         if not args.retr_symlinks:
             _logger.warning(

@@ -9,7 +9,6 @@ from wpull.pipeline.app import AppSession
 from wpull.pipeline.item import URLRecord, Status, URLResult, URLProperties, \
     URLData, LinkType
 from wpull.pipeline.pipeline import ItemSource
-from wpull.backport.logging import BraceMessage as __
 from wpull.protocol.abstract.request import URLPropertyMixin, \
     ProtocolResponseMixin, BaseResponse, BaseRequest
 from wpull.url import parse_url_or_log
@@ -57,7 +56,7 @@ class ItemSession(object):
 
     def skip(self):
         '''Mark the item as processed without download.'''
-        _logger.debug(__(_('Skipping ‘{url}’.'), url=self.url_record.url))
+        _logger.debug(f"Skipping ‘{self.url_record.url}’.")
         self.app_session.factory['URLTable'].check_in(self.url_record.url, Status.skipped)
 
         self._processed = True
@@ -77,7 +76,7 @@ class ItemSession(object):
         if increment_try_count:
             self._try_count_incremented = True
 
-        _logger.debug(__('Marking URL {0} status {1}.', url, status))
+        _logger.debug(f"Marking URL {url} status {status}.")
 
         url_result = URLResult()
         url_result.filename = filename

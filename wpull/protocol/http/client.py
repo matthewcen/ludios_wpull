@@ -12,7 +12,6 @@ from typing import Optional, Union, IO, Callable
 
 from wpull.application.hook import HookableMixin
 from wpull.protocol.abstract.client import BaseClient, BaseSession, DurationTimeout
-from wpull.backport.logging import BraceMessage as __
 from wpull.body import Body
 from wpull.protocol.http.request import Request, Response
 from wpull.protocol.http.stream import Stream
@@ -76,7 +75,7 @@ class Session(BaseSession):
 
         assert not self._request
         self._request = request
-        _logger.debug(__('Client fetch request {0}.', request))
+        _logger.debug(f"Client fetch request {request}.")
 
         connection = await self._acquire_request_connection(request)
         full_url = connection.proxied and not connection.tunneled

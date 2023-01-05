@@ -11,7 +11,6 @@ import time
 
 import asyncio
 
-from wpull.backport.logging import BraceMessage as __
 
 
 _ = gettext.gettext

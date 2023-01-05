@@ -4,7 +4,6 @@ import logging
 import functools
 
 import wpull.testing.async_
-from wpull.backport.logging import BraceMessage as __
 from wpull.network.connection import Connection
 from wpull.protocol.ftp.request import Command
 from wpull.protocol.ftp.stream import ControlStream, DataStream
@@ -19,7 +18,7 @@ class TestStream(FTPTestCase):
     @wpull.testing.async_.async_test(timeout=DEFAULT_TIMEOUT)
     def test_control_stream(self):
         def log_cb(data_type, data):
-            _logger.debug(__('{0}={1}', data_type, data))
+            _logger.debug(f"{data_type}={data}")
 
         connection = Connection(('127.0.0.1', self.server_port()))
         yield from connection.connect()

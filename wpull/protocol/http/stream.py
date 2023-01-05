@@ -11,7 +11,6 @@ import asyncio
 
 from wpull.protocol.abstract.stream import close_stream_on_error, \
     DataEventDispatcher
-from wpull.backport.logging import BraceMessage as __
 import wpull.decompression
 from wpull.errors import NetworkError, ProtocolError
 from wpull.protocol.http.chunked import ChunkedTransferReader
@@ -95,7 +94,7 @@ class Stream(object):
         file_is_async = (asyncio.iscoroutine(file.read) or
                          asyncio.iscoroutinefunction(file.read))
 
-        _logger.debug(__('Body is async: {0}', file_is_async))
+        _logger.debug(f"Body is async: {file_is_async}")
 
         if length is not None:
             bytes_left = length
@@ -254,9 +253,7 @@ class Stream(object):
                 raise ValueError('Content length cannot be negative.')
 
         except ValueError as error:
-            _logger.warning(__(
-                _('Invalid content length: {error}'), error=error
-            ))
+            _logger.warning("Invalid content length: {error}")
 
             await self._read_body_until_close(response, file)
             return

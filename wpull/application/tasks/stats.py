@@ -5,7 +5,6 @@ import logging
 import asyncio
 
 from wpull.application.plugin import PluginFunctions, event_interface
-from wpull.backport.logging import BraceMessage as __
 from wpull.pipeline.pipeline import ItemTask
 from wpull.pipeline.app import AppSession
 from wpull.stats import Statistics
@@ -58,23 +57,8 @@ class StatsStopTask(ItemTask[AppSession], HookableMixin):
             speed_size_str = _('-- B')
 
         _logger.info(_('FINISHED.'))
-        _logger.info(__(
-            _(
-                'Duration: {preformatted_timedelta}. '
-                'Speed: {preformatted_speed_size}/s.'
-            ),
-            preformatted_timedelta=time_length,
-            preformatted_speed_size=speed_size_str,
-        ))
-        _logger.info(__(
-            gettext.ngettext(
-                'Downloaded: {num_files} file, {preformatted_file_size}.',
-                'Downloaded: {num_files} files, {preformatted_file_size}.',
-                stats.files
-            ),
-            num_files=stats.files,
-            preformatted_file_size=file_size
-        ))
+        _logger.info(f"Duration: {time_length}. 'Speed: {speed_size_str}/s.")
+        _logger.info(f"Downloaded: {stats.files} file{'s' if stats.files > 1 else ''}, {file_size}."),
 
         if stats.is_quota_exceeded:
             _logger.info(_('Download quota exceeded.'))

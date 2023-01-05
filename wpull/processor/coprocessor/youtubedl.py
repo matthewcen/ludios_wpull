@@ -9,7 +9,6 @@ import subprocess
 
 import asyncio
 
-from wpull.backport.logging import BraceMessage as __
 from wpull.document.html import HTMLReader
 from wpull.driver.process import Process
 from wpull.pipeline.session import ItemSession
@@ -51,12 +50,12 @@ class YoutubeDlCoprocessor(object):
         )
 
         url = item_session.url_record.url
-        _logger.info(__(_('youtube-dl fetching ‘{url}’.'), url=url))
+        _logger.info(f"youtube-dl fetching ‘{url}’.")
 
         with contextlib.closing(session):
             await session.run()
 
-        _logger.info(__(_('youtube-dl fetched ‘{url}’.'), url=url))
+        _logger.info(f"youtube-dl fetched ‘{url}’.")
 
 
 class Session(object):
@@ -149,10 +148,7 @@ class Session(object):
         filenames = list(glob.glob(glob_pattern))
 
         if not filenames:
-            _logger.warning(__(
-                _('Could not find external process metadata file: {filename}'),
-                filename=glob_pattern
-            ))
+            _logger.warning(f"Could not find external process metadata file: {glob_pattern}")
             return
 
         for filename in filenames:

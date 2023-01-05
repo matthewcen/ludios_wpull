@@ -4,7 +4,6 @@ import asyncio
 import itertools
 import tempfile
 
-from wpull.backport.logging import BraceMessage as __
 from wpull.pipeline.app import AppSession
 from wpull.pipeline.pipeline import ItemTask
 import wpull.string
@@ -13,7 +12,6 @@ from wpull.pipeline.session import ItemSession
 import wpull.resmon
 
 _logger = logging.getLogger(__name__)
-_ = gettext.gettext
 
 
 class ResmonSetupTask(ItemTask[AppSession]):
@@ -67,16 +65,9 @@ class ResmonSleepTask(ItemTask[ItemSession]):
 
             if log and counter % 15 == 0:
                 if resource_info.path:
-                    _logger.warning(__(
-                        _('Low disk space on {path} ({size} free).'),
-                        path=resource_info.path,
-                        size=wpull.string.format_size(resource_info.free)
-                    ))
+                    _logger.warning(f"Low disk space on {resource_info.path} ({wpull.string.format_size(resource_info.free)} free).")
                 else:
-                    _logger.warning(__(
-                        _('Low memory ({size} free).'),
-                        size=wpull.string.format_size(resource_info.free)
-                    ))
+                    _logger.warning(f"Low memory ({wpull.string.format_size(resource_info.free)} free).")
 
                 _logger.warning(_('Waiting for operator to clear situation.'))
 

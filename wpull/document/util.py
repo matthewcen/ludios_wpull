@@ -2,7 +2,6 @@
 
 import logging
 
-from wpull.backport.logging import BraceMessage as __
 import wpull.protocol.http.util
 import wpull.util
 import wpull.string
@@ -46,7 +45,7 @@ def detect_response_encoding(response, is_html=False, peek=131072):
         wpull.util.peek_file(response.body, peek), encoding=encoding, is_html=is_html
     )
 
-    _logger.debug(__('Got encoding: {0}', encoding))
+    _logger.debug(f"Got encoding: {encoding}")
 
     return encoding
 

@@ -4,7 +4,6 @@ import gettext
 import logging
 
 import wpull.util
-from wpull.backport.logging import BraceMessage as __
 from wpull.document.css import CSSReader
 from wpull.document.util import detect_response_encoding
 from wpull.pipeline.item import LinkType
@@ -53,9 +52,6 @@ class CSSScraper(CSSReader, BaseTextStreamScraper):
                     link_contexts.add(LinkContext(link, inline=True, link_type=link_type))
 
         except UnicodeError as error:
-            _logger.warning(__(
-                _('Failed to read document at ‘{url}’: {error}'),
-                url=request.url_info.url, error=error
-            ))
+            _logger.warning(f"Failed to read document at ‘{url}’: {error}")
 
         return ScrapeResult(link_contexts, encoding)

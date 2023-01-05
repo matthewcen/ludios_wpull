@@ -16,16 +16,6 @@ class BraceMessage:
         return self.fmt.format(*self.args, **self.kwargs)
 
 
-class DollarMessage:
-    def __init__(self, fmt, **kwargs):
-        self.fmt = fmt
-        self.kwargs = kwargs
-
-    def __str__(self):
-        from string import Template
-        return Template(self.fmt).substitute(**self.kwargs)
-
-
 class StyleAdapter(logging.LoggerAdapter):
     def __init__(self, logger, extra=None):
         super(StyleAdapter, self).__init__(logger, extra or {})

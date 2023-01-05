@@ -1,22 +1,15 @@
 '''Resource monitor.'''
 import collections
-import gettext
 import logging
-
-from wpull.backport.logging import BraceMessage as __
 
 
 _logger = logging.getLogger(__name__)
-_ = gettext.gettext
 
 
 try:
     import psutil
 except ImportError as error:
-    _logger.warning(__(
-        _('psutil: {error_msg}. Resource monitoring will be unavailable.'),
-        error_msg=error
-    ))
+    _logger.warning(f"psutil: {error}. Resource monitoring will be unavailable.")
     psutil = None
 
 

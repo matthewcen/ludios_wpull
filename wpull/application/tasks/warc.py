@@ -5,7 +5,6 @@ import logging
 
 import sys
 
-from wpull.backport.logging import BraceMessage as __
 from wpull.pipeline.app import AppSession
 from wpull.pipeline.pipeline import ItemTask
 from wpull.warc.recorder import WARCRecorder, WARCRecorderParams
@@ -115,12 +114,4 @@ class WARCVisitsTask(ItemTask[AppSession]):
 
         url_table = session.factory['URLTable']
         url_table.add_visits(visits())
-
-        _logger.info(__(
-            gettext.ngettext(
-                'Loaded {num} record from CDX file.',
-                'Loaded {num} records from CDX file.',
-                counter
-            ),
-            num=counter
-        ))
+        _logger.info(f"Loaded {counter} record{'s' if counter > 1 else ''} from CDX file.")

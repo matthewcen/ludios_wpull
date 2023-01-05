@@ -6,7 +6,6 @@ import logging
 
 import time
 from typing import Optional, Sequence, TypeVar, Generic, Iterator, Tuple, Set
-from wpull.backport.logging import BraceMessage as __
 
 _logger = logging.getLogger(__name__)
 
@@ -90,12 +89,12 @@ class Worker(object):
         if item == POISON_PILL:
             return item
 
-        _logger.debug(__('Worker id {} Processing item {}', _worker_id, item))
+        _logger.debug(f"Worker id {_worker_id} Processing item {item}")
 
         for task in self._tasks:
             await task.process(item)
 
-        _logger.debug(__('Worker id {} Processed item {}', _worker_id, item))
+        _logger.debug(f"Worker id {_worker_id} Processed item {item}")
 
         await self._item_queue.item_done()
 
@@ -276,14 +275,8 @@ class Pipeline(object):
             self._unpaused_event.clear()
 
     def _warn_discarded_items(self):
-        _logger.warning(__(
-            gettext.ngettext(
-                'Discarding {num} unprocessed item.',
-                'Discarding {num} unprocessed items.',
-                self._item_queue.unfinished_items
-            ),
-            num=self._item_queue.unfinished_items
-        ))
+        plural = self._item_queue.unfinished_items
+        _logger.warning(f"Discarding {self._item_queue.unfinished_items} unprocessed item{'s' if plural else ''}.")
 
 
 class PipelineSeries(object):

@@ -9,7 +9,6 @@ import re
 import string
 
 import wpull.url
-from wpull.backport.logging import BraceMessage as __
 from wpull.pipeline.item import LinkType
 
 _ = gettext.gettext
@@ -75,10 +74,7 @@ def urljoin_safe(base_url, url, allow_fragments=True):
             base_url, url, allow_fragments=allow_fragments
         )
     except ValueError as error:
-        _logger.warning(__(
-            _('Unable to parse URL ‘{url}’: {error}.'),
-            url=url, error=error
-        ))
+        _logger.warning(f"Unable to parse URL ‘{url}’: {error}.'")
 
 
 def is_likely_inline(link):

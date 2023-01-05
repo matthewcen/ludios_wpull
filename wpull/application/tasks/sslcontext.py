@@ -7,7 +7,6 @@ import tempfile
 
 import atexit
 
-from wpull.backport.logging import BraceMessage as __
 from wpull.pipeline.pipeline import ItemTask
 from wpull.pipeline.app import AppSession
 import wpull.util
@@ -83,19 +82,13 @@ class SSLContextTask(ItemTask[AppSession]):
                     if os.path.isfile(filename):
                         certs.update(cls._read_pem_file(filename))
             else:
-                _logger.warning(__(
-                    _('Certificate directory {path} does not exist.'),
-                    path=args.ca_directory
-                ))
+                _logger.warning(f"Certificate directory {args.ca_directory} does not exist.")
 
         if args.ca_certificate:
             if os.path.isfile(args.ca_certificate):
                 certs.update(cls._read_pem_file(args.ca_certificate))
             else:
-                _logger.warning(__(
-                    _('Certificate file {path} does not exist.'),
-                    path=args.ca_certificate
-                ))
+                _logger.warning(f"Certificate file {args.ca_certificate} does not exist.")
 
         session.ca_certs_filename = certs_filename = tempfile.mkstemp(
             suffix='.pem', prefix='tmp-wpull-')[1]
