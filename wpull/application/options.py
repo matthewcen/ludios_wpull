@@ -1326,13 +1326,11 @@ class AppArgumentParser(argparse.ArgumentParser):
         for option_name in option_names:
             if vars(args).get(option_name):
                 self.error(
-                    _('WARC output cannot be combined with {option_name}.')
-                    .format(option_name=option_name)
+                    _(f'WARC output cannot be combined with {option_name}.')
                 )
 
         if args.warc_move and not os.path.isdir(args.warc_move):
-            self.error('WARC destination {path} is not a directory.'
-                       .format(path=args.warc_move))
+            self.error(f'WARC destination {args.warc_move} is not a directory.')
 
     def _post_ssl_args(self, args):
         if args.secure_protocol:

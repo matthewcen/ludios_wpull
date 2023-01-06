@@ -125,9 +125,9 @@ class BaseConnection(object):
                  connect_timeout: Optional[float]=None,
                  bind_host: Optional[str]=None,
                  sock: Optional[socket.socket]=None):
-        assert len(address) >= 2, 'Expect str & port. Got {}.'.format(address)
+        assert len(address) >= 2, f'Expect str & port. Got {address}.'
         assert '.' in address[0] or ':' in address[0], \
-            'Expect numerical address. Got {}.'.format(address[0])
+            f'Expect numerical address. Got {address[0]}.'
 
         self._address = address
         self._hostname = hostname or address[0]
@@ -229,7 +229,7 @@ class BaseConnection(object):
     async def write(self, data: bytes, drain: bool=True):
         '''Write data.'''
         assert self._state == ConnectionState.created, \
-            'Expect conn created. Got {}.'.format(self._state)
+            f'Expect conn created. Got {self._state}.'
 
         self.writer.write(data)
 
@@ -243,7 +243,7 @@ class BaseConnection(object):
     async def read(self, amount: int=-1) -> bytes:
         '''Read data.'''
         assert self._state == ConnectionState.created, \
-            'Expect conn created. Got {}.'.format(self._state)
+            f'Expect conn created. Got {self._state}.'
 
         data = await \
             self.run_network_operation(
@@ -256,7 +256,7 @@ class BaseConnection(object):
     async def readline(self) -> bytes:
         '''Read a line of data.'''
         assert self._state == ConnectionState.created, \
-            'Expect conn created. Got {}.'.format(self._state)
+            f'Expect conn created. Got {self._state}.'
 
         with self._close_timer.with_timeout():
             data = await \
@@ -285,7 +285,7 @@ class BaseConnection(object):
 
                 if self._close_timer.is_timeout():
                     raise NetworkTimedOut(
-                        '{name} timed out.'.format(name=name))
+                        f'{name} timed out.')
                 else:
                     return data
             elif wait_timeout is not None:
@@ -297,19 +297,17 @@ class BaseConnection(object):
         except asyncio.TimeoutError as error:
             self.close()
             raise NetworkTimedOut(
-                '{name} timed out.'.format(name=name)) from error
+                f'{name} timed out.') from error
         except (SSLCertVerificationError) \
                 as error:
             self.close()
             raise SSLCertVerificationError(
-                '{name} certificate error: {error}'
-                .format(name=name, error=error)) from error
+                f'{name} certificate error: {error}') from error
         except AttributeError as error:
             self.close()
 
             raise NetworkError(
-                '{name} network error: connection closed unexpectedly: {error}'
-                .format(name=name, error=error)) from error
+                f'{name} network error: connection closed unexpectedly: {error}') from error
         except (socket.error, ssl.SSLError, OSError, IOError) as error:
             self.close()
             if isinstance(error, NetworkError):
@@ -325,8 +323,7 @@ class BaseConnection(object):
             error_string = str(error).lower()
             if 'certificate' in error_string or 'unknown ca' in error_string:
                 raise SSLCertVerificationError(
-                    '{name} certificate error: {error}'
-                    .format(name=name, error=error)) from error
+                    f'{name} certificate error: {error}') from error
 
             else:
                 if error.errno:
@@ -334,8 +331,7 @@ class BaseConnection(object):
                         error.errno, os.strerror(error.errno)) from error
                 else:
                     raise NetworkError(
-                        '{name} network error: {error}'
-                        .format(name=name, error=error)) from error
+                        f'{name} network error: {error}') from error
 
 
 class Connection(BaseConnection):
@@ -471,7 +467,7 @@ class SSLConnection(Connection):
 
         assert verify_mode in (ssl.CERT_NONE, ssl.CERT_REQUIRED,
                                ssl.CERT_OPTIONAL), \
-            'Unknown verify mode {}'.format(verify_mode)
+            f'Unknown verify mode {verify_mode}'
 
         if verify_mode == ssl.CERT_NONE:
             return

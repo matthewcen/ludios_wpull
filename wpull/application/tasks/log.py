@@ -54,10 +54,7 @@ class LoggingSetupTask(ItemTask[AppSession]):
 
         if current_level > min_level:
             root_logger.setLevel(min_level)
-            root_logger.debug(
-                'Wpull needs the root logger level set to {0}.'
-                    .format(min_level)
-            )
+            root_logger.debug(f'Wpull needs the root logger level set to {min_level}.')
 
         if current_level <= logging.INFO:
             logging.captureWarnings(True)

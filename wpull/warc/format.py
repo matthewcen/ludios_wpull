@@ -76,7 +76,7 @@ class WARCRecord(object):
         self.fields[self.WARC_TYPE] = warc_type
         self.fields[self.CONTENT_TYPE] = content_type
         self.fields[self.WARC_DATE] = wpull.util.datetime_str()
-        self.fields[self.WARC_RECORD_ID] = '<{0}>'.format(uuid.uuid4().urn)
+        self.fields[self.WARC_RECORD_ID] = f'<{uuid.uuid4().urn}>'
 
     def set_content_length(self):
         '''Find and set the content length.
@@ -119,15 +119,11 @@ class WARCRecord(object):
 
         content_hash = block_hasher.digest()
 
-        self.fields['WARC-Block-Digest'] = 'sha1:{0}'.format(
-            base64.b32encode(content_hash).decode()
-        )
+        self.fields['WARC-Block-Digest'] = f'sha1:{base64.b32encode(content_hash).decode()}'
 
         if payload_offset is not None:
             payload_hash = payload_hasher.digest()
-            self.fields['WARC-Payload-Digest'] = 'sha1:{0}'.format(
-                base64.b32encode(payload_hash).decode()
-            )
+            self.fields['WARC-Payload-Digest'] = f'sha1:{base64.b32encode(payload_hash).decode()}'
 
         self.fields['Content-Length'] = str(content_length)
 

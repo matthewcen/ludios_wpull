@@ -151,8 +151,7 @@ class Session(BaseSession):
             await asyncio.wait_for(read_future, timeout=duration_timeout)
         except asyncio.TimeoutError as error:
             raise DurationTimeout(
-                'Did not finish reading after {} seconds.'
-                    .format(duration_timeout)
+                f'Did not finish reading after {duration_timeout} seconds.'
             ) from error
 
         self._session_state = SessionState.response_received

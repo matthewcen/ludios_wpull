@@ -159,10 +159,7 @@ def printable_str(text, keep_newlines=False):
     Use :func:`repr` or :func:`ascii` instead for things such as
     Exception messages.
     '''
-    if isinstance(text, str):
-        new_text = ascii(text)[1:-1]
-    else:
-        new_text = ascii(text)
+    new_text = ascii(text)[1:-1] if isinstance(text, str) else ascii(text)
 
     if keep_newlines:
         new_text = new_text.replace('\\r', '\r').replace('\\n', '\n')

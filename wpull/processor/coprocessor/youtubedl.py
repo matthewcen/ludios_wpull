@@ -81,7 +81,7 @@ class Session(object):
         self._path_prefix, output_template = self._get_output_template()
         args = [
             self._youtube_dl_path,
-            '--proxy', 'http://{}:{}'.format(host, port),
+            '--proxy', f'http://{host}:{port}',
             '--no-continue',
             '--write-info-json',
             '--write-annotations',
@@ -126,9 +126,9 @@ class Session(object):
             self._temp_dir = tempfile.TemporaryDirectory(
                 dir=self._root_path, prefix='tmp-wpull-youtubedl'
             )
-            path = '{}/tmp'.format(self._temp_dir.name)
+            path = f'{self._temp_dir.name}/tmp'
 
-        return path, '{}.%(id)s.%(format_id)s.%(ext)s'.format(path)
+        return path, f'{path}.%(id)s.%(format_id)s.%(ext)s'
 
     async def _stderr_callback(self, line):
         _logger.warning(line.decode('utf-8', 'replace').rstrip())
@@ -141,9 +141,7 @@ class Session(object):
 
         Uses pywb spec.
         '''
-        uri = 'metadata://{}{}'.format(self._item_session.url_record.url_info.authority,
-                                       self._item_session.url_record.url_info.resource)
-
+        uri = f'metadata://{self._item_session.url_record.url_info.authority}{self._item_session.url_record.url_info.resource}'
         glob_pattern = self._path_prefix + '*.info.json'
         filenames = list(glob.glob(glob_pattern))
 

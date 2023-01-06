@@ -178,9 +178,7 @@ class FTPSession(object):
         if 'bad_pasv_addr' in self.evil_flags:
             self.writer.write(b'227 Now passive mode (127,0,0,WOW,SO,UNEXPECT)\r\n')
         else:
-            self.writer.write('227 Now passive mode (127,0,0,1,{},{})\r\n'
-                              .format(big_port_num, small_port_num)
-                              .encode('utf-8'))
+            self.writer.write(f'227 Now passive mode (127,0,0,1,{big_port_num},{small_port_num})\r\n'.encode('utf-8'))
 
     async def _wait_data_writer(self):
         for dummy in range(50):
@@ -345,13 +343,9 @@ class FTPTestCase(IsolatedAsyncioTestCase):
 
     def get_url(self, path, username='', password=''):
         if username or password:
-            return 'ftp://{username}@{password}:127.0.0.1:{port}{path}' \
-                .format(path=path, port=self.server_port(),
-                        username=username, password=password
-                        )
+            return f'ftp://{username}@{password}:127.0.0.1:{self.server_port()}{path}'
         else:
-            return 'ftp://127.0.0.1:{port}{path}'.format(
-                path=path, port=self.server_port())
+            return f'ftp://127.0.0.1:{self.server_port()}{path}'
 
 
 if __name__ == '__main__':

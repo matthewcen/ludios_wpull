@@ -165,7 +165,7 @@ class Application(HookableMixin):
                     _logger.exception('Fatal exception.')
                 else:
                     try:
-                        text = '{}: {}'.format(type(error).__name__, error)
+                        text = f'{type(error).__name__}: {error}'
                     except AttributeError:
                         text = str(error)
                     _logger.error(text)

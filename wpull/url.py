@@ -127,12 +127,12 @@ class URLInfo(object):
 
         url = url.strip()
         if frozenset(url) & C0_CONTROL_SET:
-            raise ValueError('URL contains control codes: {}'.format(ascii(url)))
+            raise ValueError(f'URL contains control codes: {ascii(url)}')
 
         scheme, sep, remaining = url.partition(':')
 
         if not scheme:
-            raise ValueError('URL missing scheme: {}'.format(ascii(url)))
+            raise ValueError(f'URL missing scheme: {ascii(url)}')
 
         scheme = scheme.lower()
 
@@ -141,12 +141,12 @@ class URLInfo(object):
             remaining = url
             scheme = default_scheme
         elif not sep:
-            raise ValueError('URI missing colon: {}'.format(ascii(url)))
+            raise ValueError(f'URI missing colon: {ascii(url)}')
 
         if default_scheme and '.' in scheme or scheme == 'localhost':
             # Maybe something like example.com:8080/mystuff or
             # maybe localhost:8080/mystuff
-            remaining = '{}:{}'.format(scheme, remaining)
+            remaining = f'{scheme}:{remaining}'
             scheme = default_scheme
 
         info = URLInfo()
@@ -196,7 +196,7 @@ class URLInfo(object):
         username, password = cls.parse_userinfo(userinfo)
 
         if not hostname:
-            raise ValueError('Hostname is empty: {}'.format(ascii(url)))
+            raise ValueError(f'Hostname is empty: {ascii(url)}')
 
         info.raw = url
         info.scheme = scheme
@@ -267,8 +267,7 @@ class URLInfo(object):
             new_hostname = normalize_hostname(new_hostname)
 
             if any(char in new_hostname for char in FORBIDDEN_HOSTNAME_CHARS):
-                raise ValueError('Invalid hostname: {}'
-                                 .format(ascii(hostname)))
+                raise ValueError(f'Invalid hostname: {ascii(hostname)}')
 
             return new_hostname
 
@@ -276,8 +275,7 @@ class URLInfo(object):
     def parse_ipv6_hostname(cls, hostname):
         '''Parse and normalize a IPv6 address.'''
         if not hostname.startswith('[') or not hostname.endswith(']'):
-            raise ValueError('Invalid IPv6 address: {}'
-                             .format(ascii(hostname)))
+            raise ValueError(f'Invalid IPv6 address: {ascii(hostname)}')
 
         hostname = ipaddress.IPv6Address(hostname[1:-1]).compressed
 
@@ -309,12 +307,12 @@ class URLInfo(object):
                 parts.append('@')
 
             if self.is_ipv6():
-                parts.append('[{}]'.format(self.hostname))
+                parts.append(f'[{self.hostname}]')
             else:
                 parts.append(self.hostname)
 
             if RELATIVE_SCHEME_DEFAULT_PORTS[self.scheme] != self.port:
-                parts.append(':{}'.format(self.port))
+                parts.append(f':{self.port}')
 
             parts.append(self.path)
 
@@ -368,12 +366,12 @@ class URLInfo(object):
         assert ']' not in self.hostname
 
         if self.is_ipv6():
-            hostname = '[{}]'.format(self.hostname)
+            hostname = f'[{self.hostname}]'
         else:
             hostname = self.hostname
 
         if default_port != self.port:
-            return '{}:{}'.format(hostname, self.port)
+            return f'{hostname}:{self.port}'
         else:
             return hostname
 
@@ -431,7 +429,7 @@ def normalize_hostname(hostname):
     try:
         new_hostname = hostname.encode('idna').decode('ascii').lower()
     except UnicodeError as error:
-        raise UnicodeError('Hostname {} rejected: {}'.format(hostname, error)) from error
+        raise UnicodeError(f'Hostname {hostname} rejected: {error}') from error
 
     if hostname != new_hostname:
         # Check for round-trip. May raise UnicodeError
@@ -686,7 +684,7 @@ def urljoin(base_url, url, allow_fragments=True):
         if scheme:
             return urllib.parse.urljoin(
                 base_url,
-                '{0}:{1}'.format(scheme, url),
+                f'{scheme}:{url}',
                 allow_fragments=allow_fragments
             )
 

@@ -52,7 +52,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
         self.assertEqual(1, builder.factory['Statistics'].files)
 
         cookies = list(builder.factory['CookieJar'])
-        _logger.debug('{0}'.format(cookies))
+        _logger.debug(f'{cookies}')
         self.assertEqual(1, len(cookies))
         self.assertEqual('hi', cookies[0].name)
         self.assertEqual('hello', cookies[0].value)
@@ -150,11 +150,10 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
 
         print(list(os.walk('.')))
         self.assertTrue(os.path.exists(
-            'http/localhost+{0}/index.html'.format(self.get_http_port())
+            f'http/localhost+{self.get_http_port()}/index.html'
         ))
         self.assertTrue(os.path.exists(
-            'http/localhost+{0}/index.html.orig'.format(
-                self.get_http_port())
+            f'http/localhost+{self.get_http_port()}/index.html.orig'
         ))
 
         self.assertEqual(0, exit_code)
@@ -325,7 +324,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
 
             cookies = list(sorted(builder.factory['CookieJar'],
                                   key=lambda cookie: cookie.name))
-            _logger.debug('{0}'.format(cookies))
+            _logger.debug(f'{cookies}')
             self.assertEqual(2, len(cookies))
             self.assertEqual('sessionid', cookies[0].name)
             self.assertEqual('boxcat', cookies[0].value)
@@ -340,8 +339,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
     def test_redirect_diff_host(self):
         arg_parser = AppArgumentParser()
         args = arg_parser.parse_args([
-            self.get_url('/redirect?where=diff-host&port={0}'.format(
-                self.get_http_port())),
+            self.get_url(f'/redirect?where=diff-host&port={self.get_http_port()}'),
             '--waitretry', '0'
         ])
         builder = Builder(args, unit_test=True)
@@ -359,8 +357,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
     def test_redirect_diff_host_recursive(self):
         arg_parser = AppArgumentParser()
         args = arg_parser.parse_args([
-            self.get_url('/redirect?where=diff-host&port={0}'.format(
-                self.get_http_port())),
+            self.get_url(f'/redirect?where=diff-host&port={self.get_http_port()}'),
             '--recursive',
             '--no-robots',
         ])
@@ -379,7 +376,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
         arg_parser = AppArgumentParser()
         args = arg_parser.parse_args([
             self.get_url(
-                '/span_hosts?port={0}'.format(self.get_http_port())
+                f'/span_hosts?port={self.get_http_port()}'
             ),
             '--span-hosts-allow', 'linked-pages',
             '--no-robots',
@@ -400,7 +397,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
         arg_parser = AppArgumentParser()
         args = arg_parser.parse_args([
             self.get_url(
-                '/span_hosts?port={0}'.format(self.get_http_port())
+                f'/span_hosts?port={self.get_http_port()}'
             ),
             '--span-hosts-allow', 'page-requisites',
             '--no-robots',
@@ -420,8 +417,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
     def test_strong_redirect(self):
         arg_parser = AppArgumentParser()
         args = arg_parser.parse_args([
-            self.get_url('/redirect?where=diff-host&port={0}'.format(
-                self.get_http_port())),
+            self.get_url(f'/redirect?where=diff-host&port={self.get_http_port()}'),
             '--recursive',
             '--no-strong-redirects',
             '--no-robots',
@@ -542,8 +538,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
 
         print(list(os.walk('.')))
         self.assertTrue(os.path.exists(
-            'localhost:{0}/static/my_file.txt'.format(
-                self.get_http_port())
+            f'localhost:{self.get_http_port()}/static/my_file.txt'
         ))
 
         self.assertEqual(0, exit_code)
@@ -566,8 +561,7 @@ class TestHTTPGoodApp(HTTPGoodAppTestCase):
 
         print(list(os.walk('.')))
         self.assertFalse(os.path.exists(
-            'localhost:{0}/static/my_file.txt'.format(
-                self.get_http_port())
+            f'localhost:{self.get_http_port()}/static/my_file.txt'
         ))
 
         self.assertEqual(0, exit_code)
@@ -957,7 +951,7 @@ class TestHTTPBadApp(HTTPBadAppTestCase):
         self.assertEqual(1, builder.factory['Statistics'].files)
 
         cookies = list(builder.factory['CookieJar'])
-        _logger.debug('{0}'.format(cookies))
+        _logger.debug(f'{cookies}')
         self.assertEqual(4, len(cookies))
 
     def test_long_cookie(self):
@@ -973,7 +967,7 @@ class TestHTTPBadApp(HTTPBadAppTestCase):
         self.assertEqual(1, builder.factory['Statistics'].files)
 
         cookies = list(builder.factory['CookieJar'])
-        _logger.debug('{0}'.format(cookies))
+        _logger.debug(f'{cookies}')
         self.assertEqual(0, len(cookies))
 
     def test_non_http_redirect(self):

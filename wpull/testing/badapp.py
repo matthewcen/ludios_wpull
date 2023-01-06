@@ -85,12 +85,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
         http.server.BaseHTTPRequestHandler.__init__(self, *args, **kwargs)
 
     def do_GET(self):
-        _logger.debug('do_GET here. path={0}'.format(self.path))
+        _logger.debug(f'do_GET here. path={self.path}')
         path = re.match(r'(/[a-zA-Z0-9_]*)', self.path).group(1)
-        _logger.debug('do_GET parse path={0}'.format(path))
+        _logger.debug(f'do_GET parse path={path}')
         route = self._routes[path]
         route()
-        _logger.debug('do_GET done. path={0}'.format(self.path))
+        _logger.debug(f'do_GET done. path={self.path}')
 
     def do_HEAD(self):
         self.do_GET()
@@ -473,7 +473,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header(
             'Set-cookie',
-            'a={0}'.format('b' * 5000)
+            f"a={'b' * 5000}"
         )
         self.send_header('Content-length', '0')
         self.end_headers()
@@ -593,7 +593,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def many_headers(self):
         self.wfile.write(b'HTTP/1.1 200 I Heard You Like Headers\r\n')
         for num in range(10000):
-            self.wfile.write('Hey-{0}:'.format(num).encode('ascii'))
+            self.wfile.write(f'Hey-{num}:'.encode('ascii'))
             self.wfile.write(b'hey' * 1000 + b'\r\n')
 
         self.wfile.write(b'\r\n')
@@ -625,7 +625,7 @@ class Server(threading.Thread):
                 server_side=True)
 
         _logger.debug(
-            'Server bound to {0}'.format(self._server.server_address))
+            f'Server bound to {self._server.server_address}')
         self.started_event = threading.Event()
 
     def run(self):

@@ -27,7 +27,7 @@ class JavaScriptScraper(JavaScriptReader, BaseTextStreamScraper):
         for text, is_link in self.iter_text(file, encoding):
             if is_link:
                 try:
-                    new_text = json.loads('"{0}"'.format(text))
+                    new_text = json.loads(f'"{text}"')
                 except ValueError:
                     yield (text, False)
                     continue

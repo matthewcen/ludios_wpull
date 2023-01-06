@@ -106,7 +106,7 @@ def url_to_filename(url, index='index.html', alt_char=False):
     Returns:
         str
     '''
-    assert isinstance(url, str), 'Expect str. Got {}.'.format(type(url))
+    assert isinstance(url, str), f'Expect str. Got {type(url)}.'
     url_split_result = urllib.parse.urlsplit(url)
 
     filename = url_split_result.path.split('/')[-1]
@@ -120,10 +120,7 @@ def url_to_filename(url, index='index.html', alt_char=False):
         else:
             query_delim = '?'
 
-        filename = '{0}{1}{2}'.format(
-            filename, query_delim, url_split_result.query
-        )
-
+        filename = f'{filename}{query_delim}{url_split_result.query}'
     return filename
 
 
@@ -146,7 +143,7 @@ def url_to_dir_parts(url, include_protocol=False, include_hostname=False,
     Returns:
         list
     '''
-    assert isinstance(url, str), 'Expect str. Got {}.'.format(type(url))
+    assert isinstance(url, str), f'Expect str. Got {type(url)}.'
     url_split_result = urllib.parse.urlsplit(url)
 
     parts = []
@@ -163,9 +160,7 @@ def url_to_dir_parts(url, include_protocol=False, include_hostname=False,
             else:
                 port_delim = ':'
 
-            hostname = '{0}{1}{2}'.format(
-                hostname, port_delim, url_split_result.port
-            )
+            hostname = f'{hostname}{port_delim}{url_split_result.port}'
 
         parts.append(hostname)
 
@@ -190,8 +185,7 @@ class PercentEncoder(collections.defaultdict):
         self.ascii = ascii_
 
     def __missing__(self, char):
-        assert isinstance(char, bytes), \
-            'Expect bytes. Got {}.'.format(type(char))
+        assert isinstance(char, bytes), f'Expect bytes. Got {type(char)}.'
 
         char_num = ord(char)
 
@@ -238,8 +232,7 @@ def safe_filename(filename, os_type='unix', no_control=True, ascii_only=True,
     Returns:
         str
     '''
-    assert isinstance(filename, str), \
-        'Expect str. Got {}.'.format(type(filename))
+    assert isinstance(filename, str), f'Expect str. Got {type(filename)}.'
 
     if filename in ('.', os.curdir):
         new_filename = '%2E'
@@ -269,9 +262,7 @@ def safe_filename(filename, os_type='unix', no_control=True, ascii_only=True,
     if max_length and len(new_filename) > max_length:
         hash_obj = hashlib.sha1(new_filename.encode(encoding))
         new_length = max(0, max_length - 8)
-        new_filename = '{0}{1}'.format(
-            new_filename[:new_length], hash_obj.hexdigest()[:8]
-        )
+        new_filename = f'{new_filename[:new_length]}{hash_obj.hexdigest()[:8]}'
 
     if case == 'lower':
         new_filename = new_filename.lower()

@@ -41,10 +41,10 @@ class TestWARC(unittest.TestCase, TempDirMixin):
             return
 
         if not ignore_minor_error:
-            raise Exception('Validation failed {}'.format(output))
+            raise Exception(f'Validation failed {output}')
         else:
             if re.search(r'(VerifyProblem:.+ True\))|(.+Error:)', output):
-                raise Exception('Validation failed\n{}'.format(output))
+                raise Exception(f'Validation failed\n{output}')
 
     def test_warc_recorder(self):
         file_prefix = 'asdf'
@@ -107,12 +107,11 @@ class TestWARC(unittest.TestCase, TempDirMixin):
         self.assertIn(b'Content-Type: application/http;msgtype=response',
                       warc_file_content)
         self.assertIn(
-            'Wpull/{0}'.format(wpull.version.__version__).encode('utf-8'),
+            f'Wpull/{wpull.version.__version__}'.encode('utf-8'),
             warc_file_content
         )
         self.assertIn(
-            'Python/{0}'.format(
-                wpull.util.python_version()).encode('utf-8'),
+            f'Python/{wpull.util.python_version()}'.encode('utf-8'),
             warc_file_content
         )
         self.assertIn(b'Extra-Field: my_extra_field', warc_file_content)
@@ -209,8 +208,7 @@ class TestWARC(unittest.TestCase, TempDirMixin):
         self.assertIn(b'Content-Type: text/x-ftp-control-conversation',
                       warc_file_content)
         self.assertIn(
-            'Python/{0}'.format(
-                wpull.util.python_version()).encode('utf-8'),
+            f'Python/{wpull.util.python_version()}'.encode('utf-8'),
             warc_file_content
         )
         self.assertIn(b'KITTEH DOGE', warc_file_content)
@@ -370,7 +368,7 @@ class TestWARC(unittest.TestCase, TempDirMixin):
         self.assertEqual(new_offset, original_offset)
         self.assertFalse(os.path.exists(warc_filename + '-wpullinc'))
 
-        _logger.debug('original offset {0}'.format(original_offset))
+        _logger.debug(f'original offset {original_offset}')
 
     def test_warc_recorder_journal(self):
         warc_filename = 'asdf.warc'

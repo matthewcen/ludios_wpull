@@ -186,7 +186,7 @@ class TestWriter(unittest.TestCase, TempDirMixin):
 
             request = HTTPRequest('http://example.com')
             response = HTTPResponse(status_code=200, reason='OK', request=request)
-            response.fields['Content-Disposition'] = 'attachment; filename={}'.format(raw_filename)
+            response.fields['Content-Disposition'] = f'attachment; filename={raw_filename}'
 
             session.process_request(request)
             session.process_response(response)

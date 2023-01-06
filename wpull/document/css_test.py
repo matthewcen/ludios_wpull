@@ -70,7 +70,7 @@ class TestCSS(unittest.TestCase):
     def test_css_read_links_big(self):
         css_data = b'\n'.join(
             [
-                'url(blah{0});'.format(num).encode('ascii')
+                f'url(blah{num});'.encode('ascii')
                 for num in range(100000)
             ]
         )
@@ -89,7 +89,7 @@ class TestCSS(unittest.TestCase):
     def test_css_read_links_huge(self):
         css_data = b'\n'.join(
             [
-                'url(blah{0});'.format(num).encode('ascii')
+                f'url(blah{num});'.encode('ascii')
                 for num in range(200000)
             ]
         )

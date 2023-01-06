@@ -37,15 +37,9 @@ class HTTPProxyConnectionPool(ConnectionPool):
         self._ssl_context = ssl_context
         self._host_filter = host_filter
 
-        if authentication:
-            self._auth_header_value = 'Basic {}'.format(
-                base64.b64encode(
-                    '{}:{}'.format(authentication[0], authentication[1])
-                    .encode('ascii')
-                ).decode('ascii')
-            )
-        else:
-            self._auth_header_value = None
+        base64.b64encode(f'{authentication[0]}:{authentication[1]}'.encode('ascii')).decode('ascii')
+
+        self._auth_header_value =  f"Basic {base64.b64encode(f'{authentication[0]}:{authentication[1]}'.encode('ascii')).decode('ascii')}" if authentication else None
 
         self._connection_map = {}
 
@@ -115,9 +109,9 @@ class HTTPProxyConnectionPool(ConnectionPool):
 
         Coroutine.
         '''
-        host = '[{}]'.format(address[0]) if ':' in address[0] else address[0]
+        host = f'[{address[0]}]' if ':' in address[0] else address[0]
         port = address[1]
-        request = RawRequest('CONNECT', '{0}:{1}'.format(host, port))
+        request = RawRequest('CONNECT', f'{host}:{port}')
 
         self.add_auth_header(request)
 
@@ -141,9 +135,7 @@ class HTTPProxyConnectionPool(ConnectionPool):
             connection.tunneled = True
         else:
             raise NetworkError(
-                'Proxy does not support CONNECT: {} {}'
-                .format(response.status_code,
-                        wpull.string.printable_str(response.reason))
+                f'Proxy does not support CONNECT: {response.status_code} {wpull.string.printable_str(response.reason)}'
             )
 
     def add_auth_header(self, request):

@@ -23,7 +23,7 @@ class HostPool(object):
     def __init__(self, connection_factory: Callable[[], Connection],
                  max_connections: int=6):
         assert max_connections > 0, \
-            'num must be positive. got {}'.format(max_connections)
+            f'num must be positive. got {max_connections}'
 
         self._connection_factory = connection_factory
         self.max_connections = max_connections
@@ -160,7 +160,7 @@ class ConnectionPool(object):
 
         Coroutine.
         '''
-        assert isinstance(port, int), 'Expect int. Got {}'.format(type(port))
+        assert isinstance(port, int), f'Expect int. Got {type(port)}'
         assert not self._closed
 
         await self._process_no_wait_releases()

@@ -78,7 +78,7 @@ class LineParser(object):
             date_str = fields[0]
             time_str = fields[1]
 
-            datetime_str = '{} {}'.format(date_str, time_str)
+            datetime_str = f'{date_str} {time_str}'
 
             file_datetime = self.parse_datetime(datetime_str)[0]
 
@@ -141,8 +141,7 @@ class LineParser(object):
                 else:
                     break
             else:
-                raise ListingError(
-                    'Could parse a date from {}'.format(repr(original_line)))
+                raise ListingError(f'Could parse a date from {repr(original_line)}')
 
             file_size = int(line[:start_index].rstrip().rpartition(' ')[-1])
 

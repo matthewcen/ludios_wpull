@@ -295,9 +295,7 @@ class BarProgress(ProgressPrinter):
             else:
                 file_size_str = '{:.1f} b'.format(speed * 8)
 
-            speed_str = _('{preformatted_file_size}/s').format(
-                preformatted_file_size=file_size_str
-            )
+            speed_str = _(f'{file_size_str}/s')
         else:
             speed_str = _('-- B/s')
 

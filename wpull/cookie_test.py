@@ -37,7 +37,7 @@ class TestCookie(unittest.TestCase):
         request = urllib.request.Request('http://example.com/')
         response = FakeResponse(
             [
-                'Set-Cookie: k={0}'.format('a' * 400)
+                f"Set-Cookie: k={'a' * 400}"
             ],
             'http://example.com/'
         )
@@ -51,7 +51,7 @@ class TestCookie(unittest.TestCase):
         request = urllib.request.Request('http://example.com/')
         response = FakeResponse(
             [
-                'Set-Cookie: k={0}'.format('a' * 5000)
+                f"Set-Cookie: k={'a' * 5000}"
             ],
             'http://example.com/'
         )
@@ -70,7 +70,7 @@ class TestCookie(unittest.TestCase):
         for key in range(55):
             response = FakeResponse(
                 [
-                    'Set-Cookie: k{0}=a'.format(key)
+                    f'Set-Cookie: k{key}=a'
                 ],
                 'http://example.com/'
             )
@@ -80,12 +80,12 @@ class TestCookie(unittest.TestCase):
             if key < 50:
                 self.assertTrue(
                     cookie_jar._cookies['example.com']['/']
-                    .get('k{0}'.format(key))
+                    .get(f'k{key}')
                 )
             else:
                 self.assertFalse(
                     cookie_jar._cookies['example.com']['/']
-                    .get('k{0}'.format(key))
+                    .get(f'k{key}')
                 )
 
         response = FakeResponse(

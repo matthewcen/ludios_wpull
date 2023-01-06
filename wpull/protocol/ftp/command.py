@@ -46,10 +46,7 @@ class Commander(object):
 
         if reply.code not in expected_codes:
             raise FTPServerError(
-                'Failed action {action}: {reply_code} {reply_text}'
-                .format(action=action, reply_code=reply.code,
-                        reply_text=ascii(reply.text)
-                        ),
+                f'Failed action {action}: {reply.code} {ascii(reply.text)}',
                 reply.code
                 )
 

@@ -59,8 +59,7 @@ class BaseSQLURLTable(BaseURLTable):
                 yield item.to_plain()
 
     def add_many(self, new_urls):
-        assert not isinstance(new_urls, (str, bytes)), \
-            'Expected a list-like. Got {}'.format(new_urls)
+        assert not isinstance(new_urls, (str, bytes)), f'Expected a list-like. Got {new_urls}'
 
         new_urls = tuple(new_urls)
 
@@ -202,8 +201,7 @@ class BaseSQLURLTable(BaseURLTable):
             session.execute(query)
 
     def remove_many(self, urls):
-        assert not isinstance(urls, (str, bytes)), \
-            'Expected list-like. Got {}.'.format(urls)
+        assert not isinstance(urls, (str, bytes)), f'Expected list-like. Got {urls}.'
 
         with self._session() as session:
             for url in urls:
@@ -272,7 +270,7 @@ class SQLiteURLTable(BaseSQLURLTable):
         # of WAL.
         escaped_path = path.replace('?', '_')
         self._engine = create_engine(
-            'sqlite:///{0}'.format(escaped_path), poolclass=SingletonThreadPool, future=True)
+            f'sqlite:///{escaped_path}', poolclass=SingletonThreadPool, future=True)
         sqlalchemy.event.listen(
             self._engine, 'connect', self._apply_pragmas_callback)
         DBBase.metadata.create_all(self._engine)

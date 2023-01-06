@@ -149,7 +149,7 @@ class Stream(object):
                 data = await self._connection.readline()
             except ValueError as error:
                 raise ProtocolError(
-                    'Invalid header: {0}'.format(error)) from error
+                    f'Invalid header: {error}') from error
 
             self._data_event_dispatcher.notify_read(data)
 
@@ -390,7 +390,7 @@ class Stream(object):
                 return self._decompressor.decompress(data)
             except zlib.error as error:
                 raise ProtocolError(
-                    'zlib error: {0}.'.format(error)
+                    f'zlib error: {error}.'
                 ) from error
         else:
             return data
@@ -402,7 +402,7 @@ class Stream(object):
                 return self._decompressor.flush()
             except zlib.error as error:
                 raise ProtocolError(
-                    'zlib flush error: {0}.'.format(error)
+                    f'zlib flush error: {error}.'
                 ) from error
         else:
             return b''

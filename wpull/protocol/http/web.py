@@ -176,7 +176,7 @@ class WebSession(object):
 
         self._next_request = request
 
-        _logger.debug('Updated next redirect request to {0}.'.format(request))
+        _logger.debug(f'Updated next redirect request to {request}.')
 
     def _get_cookie_referrer_host(self):
         '''Return the referrer hostname.'''
@@ -217,10 +217,10 @@ class WebSession(object):
         if username and password:
             _logger.debug('Add basic auth header')
 
-            auth_string = '{}:{}'.format(username, password)
+            auth_string = f'{username}:{password}'
             auth_string = base64.b64encode(
                 auth_string.encode('utf-8', 'replace')).decode('utf-8')
-            request.fields['Authorization'] = 'Basic {}'.format(auth_string)
+            request.fields['Authorization'] = f'Basic {auth_string}'
 
 
 class WebClient(object):

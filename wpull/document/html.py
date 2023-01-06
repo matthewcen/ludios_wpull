@@ -25,10 +25,8 @@ class HTMLReadElement(object):
         self.end = end
 
     def __repr__(self):
-        return 'HTMLReadElement({0}, {1}, {2}, {3}, {4})'.format(
-            repr(self.tag), repr(self.attrib), repr(self.text),
-            repr(self.tail), repr(self.end)
-        )
+        return f"HTMLReadElement {repr(self.tag)}, {repr(self.attrib)}" \
+               f"{repr(self.text)}, {repr(self.tail)}, {repr(self.end)}"
 
 
 class HTMLReader(BaseDocumentDetector, BaseHTMLReader):

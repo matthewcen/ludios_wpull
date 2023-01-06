@@ -21,7 +21,7 @@ class WARCRecorderSetupTask(ItemTask[AppSession]):
         args = session.args
 
         assert args.verbosity, \
-            'Expect logging level. Got {}.'.format(args.verbosity)
+            f'Expect logging level. Got {args.verbosity}.'
 
         if not args.warc_file:
             return
@@ -41,9 +41,7 @@ class WARCRecorderSetupTask(ItemTask[AppSession]):
         software_string = WARCRecorder.DEFAULT_SOFTWARE_STRING
 
         if args.youtube_dl:
-            software_string += ' youtube-dl/{0}'.format(
-                wpull.processor.coprocessor.youtubedl.get_version(exe_path=args.youtube_dl_exe)
-            )
+            software_string += f' youtube-dl/{wpull.processor.coprocessor.youtubedl.get_version(exe_path=args.youtube_dl_exe)}'
 
         url_table = session.factory['URLTable'] if args.warc_dedup else None
 

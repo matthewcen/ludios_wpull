@@ -46,7 +46,7 @@ class Command(SerializableMixin, DictableMixin):
         self.argument = match.group(2).decode('utf-8', errors='surrogateescape')
 
     def to_bytes(self):
-        return '{0} {1}\r\n'.format(self.name, self.argument).encode(
+        return f'{self.name} {self.argument}\r\n'.encode(
             'utf-8', errors='surrogateescape')
 
     def to_dict(self):
@@ -84,8 +84,7 @@ class Reply(SerializableMixin, DictableMixin):
                 self.text = match.group(3).decode('utf-8',
                                                   errors='surrogateescape')
             else:
-                self.text += '\r\n{0}'.format(match.group(3).decode(
-                    'utf-8', errors='surrogateescape'))
+                self.text += f"\r\n{match.group(3).decode('utf-8', errors='surrogateescape')}"
 
     def to_bytes(self):
         assert self.code is not None
@@ -97,10 +96,8 @@ class Reply(SerializableMixin, DictableMixin):
         for row_num in range(len(text_lines)):
             line = text_lines[row_num]
 
-            if row_num == len(text_lines) - 1:
-                lines.append('{0} {1}\r\n'.format(self.code, line))
-            else:
-                lines.append('{0}-{1}\r\n'.format(self.code, line))
+
+            lines.append(f"{self.code}{'' if (row_num == len(text_lines) - 1) else '-'}{line}\r\n")
 
         return ''.join(lines).encode('utf-8', errors='surrogateescape')
 
@@ -200,10 +197,7 @@ class Response(BaseResponse, DictableMixin):
         return self.reply.text
 
     def __str__(self):
-        return '{} {}\n'.format(
-            self.reply.code,
-            wpull.string.printable_str(self.reply.text, keep_newlines=True)
-        )
+        return f'{self.reply.code} {wpull.string.printable_str(self.reply.text, keep_newlines=True)}\n'        
 
 
 class ListingResponse(Response):

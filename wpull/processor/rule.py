@@ -495,17 +495,10 @@ class ProcessingRule(HookableMixin):
         '''Add additional URLs such as robots.txt, favicon.ico.'''
 
         if item_session.url_record.level == 0 and self._sitemaps:
+            base_url = f"{item_session.url_record.url_info.scheme}://{item_session.url_record.url_info.hostname_with_port}"
             extra_url_infos = (
-                self.parse_url(
-                    '{0}://{1}/robots.txt'.format(
-                        item_session.url_record.url_info.scheme,
-                        item_session.url_record.url_info.hostname_with_port)
-                ),
-                self.parse_url(
-                    '{0}://{1}/sitemap.xml'.format(
-                        item_session.url_record.url_info.scheme,
-                        item_session.url_record.url_info.hostname_with_port)
-                )
+                self.parse_url(f"{base_url}/robots.txt"),
+                self.parse_url(f"{base_url}/sitemap.xml")
             )
 
             for url_info in extra_url_infos:

@@ -426,14 +426,10 @@ def to_dir_path_url(url_info: URLInfo) -> str:
     '''Return URL string with the path replaced with directory only.'''
     dir_name = posixpath.dirname(url_info.path)
 
-    if not dir_name.endswith('/'):
-        url_template = 'ftp://{}{}/'
-    else:
-        url_template = 'ftp://{}{}'
-
-    return url_template.format(url_info.hostname_with_port, dir_name)
+    url_template = f"ftp://{url_info.hostname_with_port}{dir_name}{'/' if not dir_name.endswith('/') else ''}"
+    return url_template
 
 
 def append_slash_to_path_url(url_info: URLInfo) -> str:
     '''Return URL string with the path suffixed with a slash.'''
-    return 'ftp://{}{}/'.format(url_info.hostname_with_port, url_info.path)
+    return f'ftp://{url_info.hostname_with_port}{url_info.path}/'

@@ -56,7 +56,7 @@ class PostHandler(tornado.web.RequestHandler):
 class CookieHandler(tornado.web.RequestHandler):
     def get(self):
         cookie_value = self.get_cookie('test')
-        _logger.debug('Got cookie value {0}'.format(cookie_value))
+        _logger.debug(f'Got cookie value {cookie_value}')
 
         if cookie_value == 'no':
             self.set_cookie('test', 'yes', expires_days=2)
@@ -71,7 +71,7 @@ class RedirectHandler(tornado.web.RequestHandler):
 
         if where == 'diff-host':
             port = self.get_argument('port')
-            self.redirect('http://somewhereelse.invalid:{0}'.format(port))
+            self.redirect(f'http://somewhereelse.invalid:{port}')
         elif self.get_argument('code', None):
             self.redirect('/', status=int(self.get_argument('code')))
         else:
@@ -143,7 +143,7 @@ class ContentDispositionHandler(tornado.web.RequestHandler):
     def get(self):
         filename = self.get_argument('filename', 'command.com')
         self.add_header(
-            'Content-Disposition', 'attachment; filename={}'.format(filename)
+            'Content-Disposition', f'attachment; filename={filename}'
         )
         self.write(b'The small pup gnawed a hole in the sock.')
 

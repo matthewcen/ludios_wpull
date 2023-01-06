@@ -113,7 +113,7 @@ class SSLContextTask(ItemTask[AppSession]):
             iterable: An iterable of certificates. The certificate data
             is :class:`byte`.
         '''
-        _logger.debug('Reading PEM {0}.'.format(filename))
+        _logger.debug(f'Reading PEM {filename}.')
 
         if from_package:
             return wpull.util.filter_pem(wpull.util.get_package_data(filename))

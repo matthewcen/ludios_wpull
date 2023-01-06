@@ -307,7 +307,7 @@ def parse_datetime(text: str, date_format: str=None,
         return guess_date, start_index, end_index
 
     else:
-        raise ValueError('Failed to parse date from {}'.format(repr(text)))
+        raise ValueError(f'Failed to parse date from {repr(text)}')
 
 
 def parse_month(text: str) -> int:
@@ -323,12 +323,12 @@ def parse_month(text: str) -> int:
     except KeyError:
         pass
 
-    raise ValueError('Month {} not found.'.format(repr(text)))
+    raise ValueError(f'Month {repr(text)} not found.')
 
 
 def y2k(year: int) -> int:
     '''Convert two digit year to four digit year.'''
-    assert 0 <= year <= 99, 'Not a two digit year {}'.format(year)
+    assert 0 <= year <= 99, f'Not a two digit year {year}'
     return year + 1000 if year >= 69 else year + 2000
 
 

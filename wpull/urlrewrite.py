@@ -26,12 +26,7 @@ class URLRewriter(object):
             url_info = parse_url_or_log(url) or url_info
 
         if self._hash_fragment_enabled and url_info.fragment.startswith('!'):
-            if url_info.query:
-                url = '{}&_escaped_fragment_={}'.format(url_info.url,
-                                                        url_info.fragment[1:])
-            else:
-                url = '{}?_escaped_fragment_={}'.format(url_info.url,
-                                                        url_info.fragment[1:])
+            url = f"{url_info.url}{'&' if url_info.query else '?'}_escaped_fragment_={url_info.fragment[1:]}"
 
             url_info = parse_url_or_log(url) or url_info
 

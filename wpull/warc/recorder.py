@@ -66,8 +66,7 @@ class WARCRecorder(object):
     '''
     CDX_DELIMINATOR = ' '
     '''Default CDX delimiter.'''
-    DEFAULT_SOFTWARE_STRING = 'Wpull Python/{0}'.format(wpull.util.python_version()
-    )
+    DEFAULT_SOFTWARE_STRING = f'Wpull Python/{wpull.util.python_version()}'
     '''Default software string.'''
 
     def __init__(self, filename, params=None):
@@ -95,7 +94,7 @@ class WARCRecorder(object):
         files = list(glob.glob(self._prefix_filename + '*-wpullinc'))
 
         if files:
-            raise OSError('WARC file {} is incomplete.'.format(files[0]))
+            raise OSError(f'WARC file {files[0]} is incomplete.')
 
     def _start_new_warc_file(self, meta=False):
         '''Create and set as current WARC file.'''
@@ -134,13 +133,11 @@ class WARCRecorder(object):
         else:
             extension = 'warc'
 
-        return '{0}{1}.{2}'.format(
-            self._prefix_filename, sequence_name, extension
-        )
+        return f'{self._prefix_filename}{sequence_name}.{extension}'
 
     def _start_new_cdx_file(self):
         '''Create and set current CDX file.'''
-        self._cdx_filename = '{0}.cdx'.format(self._prefix_filename)
+        self._cdx_filename = f'{self._prefix_filename}.cdx'
 
         if not self._params.appending:
             wpull.util.truncate_file(self._cdx_filename)
@@ -321,7 +318,7 @@ class WARCRecorder(object):
 
         with open(journal_filename, 'w') as file:
             file.write('wpull-journal-version:1\n')
-            file.write('offset:{}\n'.format(before_offset))
+            file.write(f'offset:{before_offset}\n')
 
         try:
             with open_func(self._warc_filename, mode='ab') as out_file:
@@ -527,7 +524,7 @@ class HTTPWARCRecorderSession(BaseWARCRecorderSession):
         assert re.match(
             r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[a-f0-9:.]+)$',
             request.address[0]), \
-            'IP address needed, got {}'.format(request.address[0])
+            f'IP address needed, got {request.address[0]}'
 
         self._request = request
         self._request_record = record = WARCRecord()
@@ -551,8 +548,7 @@ class HTTPWARCRecorderSession(BaseWARCRecorderSession):
     def begin_response(self, response: HTTPResponse):
         assert re.match(
             r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[a-f0-9:.]+)$',
-            self._request.address[0]), \
-            'IP address needed, got {}'.format(self._request.address[0])
+            self._request.address[0]), f'IP address needed, got {self._request.address[0]}'
 
         self._response_record = record = WARCRecord()
         record.set_common_fields(WARCRecord.RESPONSE, WARCRecord.TYPE_RESPONSE)
@@ -639,26 +635,18 @@ class FTPWARCRecorderSession(BaseWARCRecorderSession):
 
         hostname, port = self._request_hostname_port()
 
-        if connection_reused:
-            connection_string = 'Reusing control connection to {hostname}:{port}'
-        else:
-            connection_string = 'Opening control connection to {hostname}:{port}'
+        action = "Reusing" if connection_reused else "Opening"
 
         self._write_control_event(
-            connection_string.format(hostname=hostname, port=port)
+            f'{action} control connection to {hostname}:{port}'
         )
 
     def end_control(self, response: FTPResponse, connection_closed=False):
         hostname, port = self._request_hostname_port()
 
-        if connection_closed:
-            connection_string = 'Closed control connection to {hostname}:{port}'
-        else:
-            connection_string = 'Kept control connection to {hostname}:{port}'
+        action = "Closed" if connection_closed else "Kept"
 
-        self._write_control_event(
-            connection_string.format(hostname=hostname, port=port)
-        )
+        self._write_control_event(f'{action} control connection to {hostname}:{port}')
 
         self._control_record.block_file.seek(0)
         self._recorder.set_length_and_maybe_checksums(self._control_record)
@@ -701,7 +689,7 @@ class FTPWARCRecorderSession(BaseWARCRecorderSession):
         hostname = self._request.address[0]
 
         if ':' in hostname:
-            hostname = '[{}]'.format(hostname)
+            hostname = f'[{hostname}]'
 
         port = self._request.address[1]
 
@@ -710,8 +698,7 @@ class FTPWARCRecorderSession(BaseWARCRecorderSession):
     def begin_transfer(self, response: FTPResponse):
         hostname, port = response.data_address
         self._write_control_event(
-            'Opened data connection to {hostname}:{port}'
-            .format(hostname=hostname, port=port)
+            f'Opened data connection to {hostname}:{port}'
         )
 
         self._response_record = record = WARCRecord()
@@ -728,8 +715,7 @@ class FTPWARCRecorderSession(BaseWARCRecorderSession):
     def end_transfer(self, response: FTPResponse):
         hostname, port = response.data_address
         self._write_control_event(
-            'Closed data connection to {hostname}:{port}'
-            .format(hostname=hostname, port=port)
+            f'Closed data connection to {hostname}:{port}'
         )
 
         self._response_record.block_file.seek(0)

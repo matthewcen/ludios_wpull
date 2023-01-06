@@ -54,8 +54,7 @@ class Factory(collections.abc.Mapping, object):
             instance
         '''
         if name in self._instance_map:
-            raise ValueError('Instance {0} is already initialized'
-                             .format(name))
+            raise ValueError(f'Instance {name} is already initialized')
 
         instance = self._class_map[name](*args, **kwargs)
         self._instance_map[name] = instance

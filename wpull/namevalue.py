@@ -110,9 +110,9 @@ class NameValueRecord(collections.abc.MutableMapping):
                     ))
                 ))
             elif value:
-                pairs.append('{0}: {1}'.format(name, value))
+                pairs.append(f'{name}: {value}')
             else:
-                pairs.append('{0}:'.format(name))
+                pairs.append(f'{name}:')
 
         pairs.append('')
         return '\r\n'.join(pairs)
@@ -153,7 +153,7 @@ def normalize_name(name, overrides=None):
 
 def guess_line_ending(string):
     '''Return the most likely line delimiter from the string.'''
-    assert isinstance(string, str), 'Expect str. Got {}'.format(type(string))
+    assert isinstance(string, str), f'Expect str. Got {type(string)}'
     crlf_count = string.count('\r\n')
     lf_count = string.count('\n')
 
@@ -169,7 +169,7 @@ def unfold_lines(string):
     Any line that starts with a space or tab is joined to the previous
     line.
     '''
-    assert isinstance(string, str), 'Expect str. Got {}'.format(type(string))
+    assert isinstance(string, str), f'Expect str. Got {type(string)}'
     lines = string.splitlines()
     line_buffer = io.StringIO()
 

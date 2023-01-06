@@ -93,7 +93,7 @@ def parse_iso8601_str(string):
 def python_version():
     '''Return the Python version as a string.'''
     major, minor, patch = sys.version_info[0:3]
-    return '{0}.{1}.{2}'.format(major, minor, patch)
+    return f'{major}.{minor}.{patch}'
 
 
 def filter_pem(data):
@@ -102,7 +102,7 @@ def filter_pem(data):
     Returns:
         ``set`` containing each certificate
     '''
-    assert isinstance(data, bytes), 'Expect bytes. Got {}.'.format(type(data))
+    assert isinstance(data, bytes), f'Expect bytes. Got {type(data)}.'
     certs = set()
     new_list = []
     in_pem_block = False

@@ -221,7 +221,7 @@ class HTTPProxySession(HookableMixin):
 
     def _write_error_response(self, code=502, message='Bad Gateway Upstream Error'):
         self._writer.write(
-            'HTTP/1.1 {} {}\r\n'.format(code, message).encode('ascii', 'replace')
+            f'HTTP/1.1 {code} {message}\r\n'.encode('ascii', 'replace')
         )
         self._writer.write(b'\r\n')
         self._writer.close()

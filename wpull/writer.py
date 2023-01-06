@@ -249,8 +249,7 @@ class BaseFileWriterSession(BaseWriterSession):
         # the code, but the HTTP function doesn't even use them.
         # FIXME: unit test is needed for this case
         raise IOError(
-            _('Server not able to continue file download: {filename}.')
-            .format(filename=self._filename))
+            _(f'Server not able to continue file download: {self._filename}.'))
 
     def _append_filename_extension(self, response: BaseResponse):
         '''Append an HTML/CSS file suffix as needed.'''
@@ -411,8 +410,7 @@ class AntiClobberFileWriterSession(BaseFileWriterSession):
 
         for suffix in itertools.count():
             if suffix:
-                candidate_filename = '{0}.{1}'.format(original_filename,
-                                                      suffix)
+                candidate_filename = f'{original_filename}.{suffix}'
 
             if not os.path.exists(candidate_filename):
                 return candidate_filename
@@ -429,7 +427,7 @@ class TimestampingFileWriterSession(BaseFileWriterSession):
     def process_request(self, request: BaseRequest):
         request = super().process_request(request)
 
-        orig_file = '{0}.orig'.format(self._filename)
+        orig_file = f'{self._filename}.orig'
 
         if os.path.exists(orig_file):
             modified_time = os.path.getmtime(orig_file)

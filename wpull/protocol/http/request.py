@@ -49,7 +49,7 @@ class RawRequest(BaseRequest, SerializableMixin, DictableMixin):
         assert self.resource_path
         assert self.version
 
-        status = '{0} {1} {2}'.format(self.method, self.resource_path, self.version).encode(self.encoding)
+        status = f'{self.method} {self.resource_path} {self.version}'.encode(self.encoding)
         fields = self.fields.to_bytes(errors='replace')
 
         return b'\r\n'.join([status, fields, b''])
@@ -83,9 +83,7 @@ class RawRequest(BaseRequest, SerializableMixin, DictableMixin):
         raise ProtocolError('Error parsing status line.')
 
     def __repr__(self):
-        return '<Request({method}, {url}, {version})>'.format(
-            method=self.method, url=self.resource_path, version=self.version
-        )
+        return f'<Request({self.method}, {self.resource_path}, {self.version})>'
 
     def copy(self):
         '''Return a copy.'''
@@ -140,7 +138,7 @@ class Request(RawRequest):
 
         if not full_url:
             if url_info.query:
-                self.resource_path = '{0}?{1}'.format(url_info.path, url_info.query)
+                self.resource_path = f'{url_info.path}?{url_info.query}'
             else:
                 self.resource_path = url_info.path
         else:
@@ -153,7 +151,7 @@ class Request(RawRequest):
             assert self.resource_path
 
             if self.resource_path[0:1] == '/' and 'Host' in self.fields:
-                self.url = 'http://{0}{1}'.format(self.fields['Host'], self.resource_path)
+                self.url = f"http://{self.fields['Host']}{self.resource_path}"
             elif self.resource_path.startswith('http'):
                 self.url = self.resource_path
 
@@ -211,7 +209,7 @@ class Response(BaseResponse, SerializableMixin, DictableMixin):
         assert self.status_code is not None
         assert self.reason is not None
 
-        status = '{0} {1} {2}'.format(self.version, self.status_code, self.reason).encode(self.encoding)
+        status = f'{self.version} {self.status_code} {self.reason}'.encode(self.encoding)
         fields = self.fields.to_bytes(errors='replace')
 
         return b'\r\n'.join([status, fields, b''])
@@ -243,14 +241,11 @@ class Response(BaseResponse, SerializableMixin, DictableMixin):
                 )
 
         raise ProtocolError(
-            'Error parsing status line {line}".'.format(line=ascii(data))
+            f'Error parsing status line {ascii(data)}".'
         )
 
     def __repr__(self):
-        return '<Response({version}, {code}, {reason})>'.format(
-            version=ascii(self.version), code=self.status_code,
-            reason=ascii(self.reason)
-        )
+        return f'<Response({self.version}, {self.status_code}, {self.reason})>'
 
     def __str__(self):
         return wpull.string.printable_str(

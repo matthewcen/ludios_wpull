@@ -127,8 +127,7 @@ class Resolver(HookableMixin):
             cache: Optional[FIFOCache]=None,
             rotate: bool=False):
         super().__init__()
-        assert family in IPFamilyPreference, \
-            'Unknown family {}.'.format(family)
+        assert family in IPFamilyPreference, f'Unknown family {family}.'
 
         self._family = family
         self._timeout = timeout
@@ -253,15 +252,9 @@ class Resolver(HookableMixin):
         except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer) as error:
             # dnspython doesn't raise an instance with a message, so use the
             # class name instead.
-            raise DNSNotFound(
-                'DNS resolution failed: {error}'
-                .format(error=wpull.util.get_exception_message(error))
-            ) from error
+            raise DNSNotFound(f'DNS resolution failed: {wpull.util.get_exception_message(error)}') from error
         except dns.exception.DNSException as error:
-            raise NetworkError(
-                'DNS resolution error: {error}'
-                .format(error=wpull.util.get_exception_message(error))
-            ) from error
+            raise NetworkError(f'DNS resolution error: {wpull.util.get_exception_message(error)}') from error
         else:
             return answer
 
@@ -285,13 +278,9 @@ class Resolver(HookableMixin):
                     socket.EAI_FAIL,
                     socket.EAI_NODATA,
                     socket.EAI_NONAME):
-                raise DNSNotFound(
-                    'DNS resolution failed: {error}'.format(error=error)
-                ) from error
+                raise DNSNotFound(f'DNS resolution failed: {error}') from error
             else:
-                raise NetworkError(
-                    'DNS resolution error: {error}'.format(error=error)
-                ) from error
+                raise NetworkError(f'DNS resolution error: {error}') from error
         except asyncio.TimeoutError as error:
             raise NetworkError('DNS resolve timed out.') from error
         else:

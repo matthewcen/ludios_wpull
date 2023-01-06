@@ -72,11 +72,7 @@ def parse_address(text: str) -> Tuple[str, int]:
 
     if match:
         return (
-            '{0}.{1}.{2}.{3}'.format(int(match.group(1)),
-                                     int(match.group(2)),
-                                     int(match.group(3)),
-                                     int(match.group(4))
-                                     ),
+            f'{int(match.group(1))}.{int(match.group(2))}.{int(match.group(3))}.{int(match.group(4))}',
             int(match.group(5)) << 8 | int(match.group(6))
             )
     else:

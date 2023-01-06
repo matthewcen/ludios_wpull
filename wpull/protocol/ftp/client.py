@@ -103,7 +103,7 @@ class Session(BaseSession):
         try:
             await self._commander.login(username, password)
         except FTPServerError as error:
-            raise AuthenticationError('Login error: {}'.format(error)) \
+            raise AuthenticationError(f'Login error: {error}') \
                 from error
 
         self._login_table[self._control_connection] = (username, password)
@@ -269,8 +269,7 @@ class Session(BaseSession):
                 asyncio.wait_for(read_future, timeout=duration_timeout)
         except asyncio.TimeoutError as error:
             raise DurationTimeout(
-                'Did not finish reading after {} seconds.'
-                .format(duration_timeout)
+                f'Did not finish reading after {duration_timeout} seconds.'
             ) from error
 
         self._response.reply = reply

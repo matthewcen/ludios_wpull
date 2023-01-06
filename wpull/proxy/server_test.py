@@ -67,7 +67,7 @@ class TestProxy(wpull.testing.goodapp.GoodAppTestCase):
 
         yield from asyncio.start_server(proxy, sock=proxy_socket)
 
-        _logger.debug('Proxy on port {0}'.format(proxy_port))
+        _logger.debug(f'Proxy on port {proxy_port}')
 
         test_client = tornado.curl_httpclient.CurlAsyncHTTPClient()
 
@@ -95,7 +95,7 @@ class TestProxy(wpull.testing.goodapp.GoodAppTestCase):
 
         yield from asyncio.start_server(proxy, sock=proxy_socket)
 
-        _logger.debug('Proxy on port {0}'.format(proxy_port))
+        _logger.debug(f'Proxy on port {proxy_port}')
 
         test_client = tornado.curl_httpclient.CurlAsyncHTTPClient()
 
@@ -123,7 +123,7 @@ class TestProxy2(wpull.testing.badapp.BadAppTestCase):
 
         yield from asyncio.start_server(proxy, sock=proxy_socket)
 
-        _logger.debug('Proxy on port {0}'.format(proxy_port))
+        _logger.debug(f'Proxy on port {proxy_port}')
 
         test_client = tornado.curl_httpclient.CurlAsyncHTTPClient()
 
