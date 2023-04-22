@@ -1,5 +1,5 @@
 # encoding=utf-8
-'''Key-value pairs.'''
+"""Key-value pairs."""
 import collections
 import gettext
 import io
@@ -9,12 +9,12 @@ _ = gettext.gettext
 
 
 class NameValueRecord(collections.abc.MutableMapping):
-    '''An ordered mapping of name-value pairs.
+    """An ordered mapping of name-value pairs.
 
     Duplicated names are accepted.
 
     .. seealso:: http://tools.ietf.org/search/draft-kunze-anvl-02
-    '''
+    """
     def __init__(self, normalize_overrides=None, encoding='utf-8',
                  wrap_width=None):
         self._map = collections.defaultdict(list)
@@ -24,14 +24,14 @@ class NameValueRecord(collections.abc.MutableMapping):
         self._wrap_width = wrap_width
 
     def parse(self, string, strict=True):
-        '''Parse the string or bytes.
+        """Parse the string or bytes.
 
         Args:
             strict (bool): If True, errors will not be ignored
 
         Raises:
             :class:`ValueError` if the record is malformed.
-        '''
+        """
         if isinstance(string, bytes):
             errors = 'strict' if strict else 'replace'
             string = string.decode(self.encoding, errors=errors)
@@ -78,26 +78,26 @@ class NameValueRecord(collections.abc.MutableMapping):
         return len(self._map)
 
     def add(self, name, value):
-        '''Append the name-value pair to the record.'''
+        """Append the name-value pair to the record."""
         normalized_name = normalize_name(name, self._normalize_overrides)
         self._map[normalized_name].append(value)
 
     def get_list(self, name):
-        '''Return all the values for given name.'''
+        """Return all the values for given name."""
         normalized_name = normalize_name(name, self._normalize_overrides)
         return self._map[normalized_name]
 
-    def get_all(self):
-        '''Return an iterator of name-value pairs.'''
+    def get_all(self) -> tuple:
+        """Return an iterator of name-value pairs."""
         for name, values in self._map.items():
             for value in values:
-                yield (name, value)
+                yield name, value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.to_str()
 
-    def to_str(self):
-        '''Convert to string.'''
+    def to_str(self) -> str:
+        """Convert to string."""
         pairs = []
         for name, value in self.get_all():
             if value and self._wrap_width:
@@ -117,16 +117,16 @@ class NameValueRecord(collections.abc.MutableMapping):
         pairs.append('')
         return '\r\n'.join(pairs)
 
-    def __bytes__(self):
+    def __bytes__(self) -> bytes:
         return self.to_bytes()
 
-    def to_bytes(self, errors='strict'):
-        '''Convert to bytes.'''
+    def to_bytes(self, errors='strict') -> bytes:
+        """Convert to bytes."""
         return str(self).encode(self.encoding, errors=errors)
 
 
-def normalize_name(name, overrides=None):
-    '''Normalize the key name to title case.
+def normalize_name(name, overrides=None) -> str:
+    """Normalize the key name to title case.
 
     For example, ``normalize_name('content-id')`` will become ``Content-Id``
 
@@ -139,9 +139,9 @@ def normalize_name(name, overrides=None):
 
     Returns:
         str
-    '''
+    """
 
-    normalized_name = name.title()
+    normalized_name: str = name.title()
 
     if overrides:
         override_map = dict([(name.title(), name) for name in overrides])
@@ -152,7 +152,7 @@ def normalize_name(name, overrides=None):
 
 
 def guess_line_ending(string):
-    '''Return the most likely line delimiter from the string.'''
+    """Return the most likely line delimiter from the string."""
     assert isinstance(string, str), f'Expect str. Got {type(string)}'
     crlf_count = string.count('\r\n')
     lf_count = string.count('\n')
@@ -164,11 +164,11 @@ def guess_line_ending(string):
 
 
 def unfold_lines(string):
-    '''Join lines that are wrapped.
+    """Join lines that are wrapped.
 
     Any line that starts with a space or tab is joined to the previous
     line.
-    '''
+    """
     assert isinstance(string, str), f'Expect str. Got {type(string)}'
     lines = string.splitlines()
     line_buffer = io.StringIO()

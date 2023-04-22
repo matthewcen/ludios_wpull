@@ -1,4 +1,4 @@
-'''File names and paths.'''
+"""File names and paths."""
 import abc
 import base64
 import hashlib
@@ -9,14 +9,14 @@ import collections
 
 
 class BasePathNamer(object, metaclass=abc.ABCMeta):
-    '''Base class for path namers.'''
+    """Base class for path namers."""
     @abc.abstractmethod
     def get_filename(self, url_info):
-        '''Return the appropriate filename based on given URLInfo.'''
+        """Return the appropriate filename based on given URLInfo."""
 
 
 class PathNamer(BasePathNamer):
-    '''Path namer that creates a directory hierarchy based on the URL.
+    """Path namer that creates a directory hierarchy based on the URL.
 
     Args:
         root (str): The base path.
@@ -30,7 +30,7 @@ class PathNamer(BasePathNamer):
 
     See also: :func:`url_to_filename`, :func:`url_to_dir_path`,
     :func:`safe_filename`.
-    '''
+    """
     def __init__(self, root, index='index.html', use_dir=False, cut=None,
                  protocol=False, hostname=False, os_type='unix',
                  no_control=True, ascii_only=True,
@@ -52,8 +52,8 @@ class PathNamer(BasePathNamer):
 
     def get_filename(self, url_info):
         url = url_info.url
-        alt_char = self._os_type == 'windows'
-        parts = []
+        alt_char: bool = self._os_type == 'windows'
+        parts: list = []
 
         if self._use_dir:
             dir_parts = url_to_dir_parts(
@@ -80,7 +80,7 @@ class PathNamer(BasePathNamer):
         return os.path.join(self._root, *parts)
 
     def safe_filename(self, part):
-        '''Return a safe filename or file part.'''
+        """Return a safe filename or file part."""
         return safe_filename(
             part,
             os_type=self._os_type, no_control=self._no_control,
@@ -89,8 +89,8 @@ class PathNamer(BasePathNamer):
             )
 
 
-def url_to_filename(url, index='index.html', alt_char=False):
-    '''Return a filename from a URL.
+def url_to_filename(url, index='index.html', alt_char=False) -> str:
+    """Return a filename from a URL.
 
     Args:
         url (str): The URL.
@@ -105,20 +105,20 @@ def url_to_filename(url, index='index.html', alt_char=False):
 
     Returns:
         str
-    '''
+    """
     assert isinstance(url, str), f'Expect str. Got {type(url)}.'
     url_split_result = urllib.parse.urlsplit(url)
 
-    filename = url_split_result.path.split('/')[-1]
+    filename: str = url_split_result.path.split('/')[-1]
 
     if not filename:
         filename = index
 
     if url_split_result.query:
         if alt_char:
-            query_delim = '@'
+            query_delim: str = '@'
         else:
-            query_delim = '?'
+            query_delim: str = '?'
 
         filename = f'{filename}{query_delim}{url_split_result.query}'
     return filename
@@ -126,7 +126,7 @@ def url_to_filename(url, index='index.html', alt_char=False):
 
 def url_to_dir_parts(url, include_protocol=False, include_hostname=False,
                      alt_char=False):
-    '''Return a list of directory parts from a URL.
+    """Return a list of directory parts from a URL.
 
     Args:
         url (str): The URL.
@@ -142,7 +142,7 @@ def url_to_dir_parts(url, include_protocol=False, include_hostname=False,
 
     Returns:
         list
-    '''
+    """
     assert isinstance(url, str), f'Expect str. Got {type(url)}.'
     url_split_result = urllib.parse.urlsplit(url)
 
@@ -175,7 +175,7 @@ def url_to_dir_parts(url, include_protocol=False, include_hostname=False,
 
 
 class PercentEncoder(collections.defaultdict):
-    '''Percent encoder.'''
+    """Percent encoder."""
     # The percent-encoder was inspired from urllib.parse
     def __init__(self, unix=False, control=False, windows=False, ascii_=False):
         super().__init__()
@@ -214,7 +214,7 @@ _encoder_cache = {}
 
 def safe_filename(filename, os_type='unix', no_control=True, ascii_only=True,
                   case=None, encoding='utf8', max_length=None):
-    '''Return a safe filename or path part.
+    """Return a safe filename or path part.
 
     Args:
         filename (str): The filename or path component.
@@ -231,7 +231,7 @@ def safe_filename(filename, os_type='unix', no_control=True, ascii_only=True,
 
     Returns:
         str
-    '''
+    """
     assert isinstance(filename, str), f'Expect str. Got {type(filename)}.'
 
     if filename in ('.', os.curdir):
@@ -273,7 +273,7 @@ def safe_filename(filename, os_type='unix', no_control=True, ascii_only=True,
 
 
 def anti_clobber_dir_path(dir_path, suffix='.d'):
-    '''Return a directory path free of filenames.
+    """Return a directory path free of filenames.
 
     Args:
         dir_path (str): A directory path.
@@ -282,7 +282,7 @@ def anti_clobber_dir_path(dir_path, suffix='.d'):
 
     Returns:
         str
-    '''
+    """
     dir_path = os.path.normpath(dir_path)
     parts = dir_path.split(os.sep)
 
@@ -298,7 +298,7 @@ def anti_clobber_dir_path(dir_path, suffix='.d'):
 
 
 def parse_content_disposition(text):
-    '''Parse a Content-Disposition header value.'''
+    """Parse a Content-Disposition header value."""
     match = re.search(r'filename\s*=\s*(.+)', text, re.IGNORECASE)
 
     if not match:

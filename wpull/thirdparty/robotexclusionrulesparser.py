@@ -89,12 +89,8 @@ from urllib.parse import urlunparse as urllib_urlunparse
 import re
 import time
 import calendar
-# rfc822 is deprecated since Python 2.3, but the functions I need from it
-# are in email.utils which isn't present until Python 2.5. ???
-try:
-   import email.utils as email_utils
-except ImportError:
-   import rfc822 as email_utils
+import email.utils as email_utils
+
 
 
 # These are the different robots.txt syntaxes that this module understands. 
@@ -130,12 +126,7 @@ _charset_extraction_regex = re.compile(r"""charset=['"]?(?P<encoding>[^'"]*)['"]
 
 
 def _raise_error(error, message):
-    # I have to exec() this code because the Python 2 syntax is invalid
-    # under Python 3 and vice-versa.
-    s = "raise "
-    s += "error(message)" 
-        
-    exec(s)
+    raise error(message)
 
 
 def _unquote_path(path):
@@ -318,12 +309,6 @@ class RobotExclusionRulesParser(object):
         return self._response_code
 
     @property
-    def sitemap(self): 
-        """Deprecated; use 'sitemaps' instead. Returns the sitemap URL present
-        in the robots.txt, if any. Defaults to None. Read only. """
-        _raise_error(DeprecationWarning, "The sitemap property is deprecated. Use 'sitemaps' instead.")
-
-    @property
     def sitemaps(self): 
         """The sitemap URLs present in the robots.txt, if any. Defaults 
         to an empty list. Read only."""
@@ -403,12 +388,7 @@ class RobotExclusionRulesParser(object):
             # object created during the connection. 
             expires_header = f.info().get("expires")
             content_type_header = f.info().get("Content-Type")
-            # As of Python 2.4, this file-like object reports the response 
-            # code, too. 
-            if hasattr(f, "code"):
-                self._response_code = f.code
-            else:
-                self._response_code = 200
+            self._response_code = f.code
             f.close()
         except urllib_error.URLError:
             # This is a slightly convoluted way to get the error instance,

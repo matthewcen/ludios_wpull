@@ -1,5 +1,5 @@
 # encoding=utf-8
-'''Request and response payload.'''
+"""Request and response payload."""
 import io
 import os
 import tempfile
@@ -8,7 +8,7 @@ import wpull.util
 
 
 class Body(object):
-    '''Represents the document/payload of a request or response.
+    """Represents the document/payload of a request or response.
 
     This class is a wrapper around a file object. Methods are forwarded
     to the underlying file object.
@@ -21,7 +21,7 @@ class Body(object):
         directory (str): If `file` is not given, use directory for a new
             temporary file.
         hint (str): If `file` is not given, use `hint` as a filename infix.
-    '''
+    """
     def __init__(self, file=None, directory=None, hint='lone_body'):
         self.file = file or new_temp_file(directory=directory, hint=hint)
         self._content_data = None
@@ -30,14 +30,14 @@ class Body(object):
         return getattr(self.file, key)
 
     def content(self):
-        '''Return the content of the file.
+        """Return the content of the file.
 
         If this function is invoked, the contents of the entire file is read
         and cached.
 
         Returns:
             ``bytes``: The entire content of the file.
-        '''
+        """
         if not self._content_data:
             if is_seekable(self.file):
                 with wpull.util.reset_file_offset(self.file):
@@ -48,7 +48,7 @@ class Body(object):
         return self._content_data
 
     def size(self):
-        '''Return the size of the file.'''
+        """Return the size of the file."""
         try:
             return os.fstat(self.file.fileno()).st_size
         except io.UnsupportedOperation:
@@ -62,14 +62,14 @@ class Body(object):
         raise OSError('Unsupported operation.')
 
     def to_dict(self):
-        '''Convert the body to a :class:`dict`.
+        """Convert the body to a :class:`dict`.
 
         Returns:
             dict: The items are:
 
                 * ``filename`` (string, None): The path of the file.
                 * ``length`` (int, None): The size of the file.
-        '''
+        """
         try:
             name = self.file.name
         except AttributeError:
@@ -90,13 +90,13 @@ class Body(object):
         return iter(self.file)
 
 
-def new_temp_file(directory=None, hint=''):
-    '''Return a new temporary file.'''
+def new_temp_file(directory=None, hint='') -> tempfile.NamedTemporaryFile:
+    """Return a new temporary file."""
     return tempfile.NamedTemporaryFile(
         prefix=f'tmp-wpull-{hint}-', suffix='.tmp', dir=directory)
 
 
-def is_seekable(file):
+def is_seekable(file) -> bool:
     if hasattr(file, 'seek'):
         if not hasattr(file, 'seekable'):
             try:

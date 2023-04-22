@@ -1,5 +1,4 @@
 import sys
-import tornado.platform.asyncio
 
 from wpull.application.builder import Builder
 from wpull.application.options import AppArgumentParser

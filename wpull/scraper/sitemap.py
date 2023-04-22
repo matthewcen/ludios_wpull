@@ -1,4 +1,4 @@
-'''Sitemap scraper'''
+"""Sitemap scraper"""
 import gettext
 import logging
 
@@ -14,7 +14,7 @@ _logger = StyleAdapter(logging.getLogger(__name__))
 
 
 class SitemapScraper(SitemapReader, BaseExtractiveScraper):
-    '''Scrape Sitemaps'''
+    """Scrape Sitemaps"""
     def __init__(self, html_parser, encoding_override=None):
         super().__init__(html_parser)
         self._encoding_override = encoding_override

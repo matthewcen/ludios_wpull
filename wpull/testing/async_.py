@@ -16,6 +16,7 @@ def async_test(func=None, timeout=30):
     return func
     # return gen_test(func, timeout)
 
+
 class AsyncHTTPTestCase(unittest.IsolatedAsyncioTestCase):
     # Native unittest based replacement for the deprecated Tornado AsyncHTTPTestCase
     # This will be replaced (hopefully) by an official Tornado implementation

@@ -154,12 +154,8 @@ class CacheItem(object):
 
     def __repr__(self):
         return (
-            '<CacheItem({key}, {value}, '
-            'time_to_live={ttl}, access_time={access_time})'
-            ' at 0x{id:x}>').format(
-                key=self.key, value=self.value,
-                ttl=self.time_to_live,
-                access_time=self.access_time, id=id(self)
+            f"<CacheItem({self.key}, {self.value}, time_to_live={self.time_to_live}, "
+            f"access_time={self.access_time}) at {hex(id(self))}"
         )
 
     def __hash__(self):

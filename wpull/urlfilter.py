@@ -1,5 +1,5 @@
 # encoding=utf-8
-'''URL filters.'''
+"""URL filters."""
 import abc
 import fnmatch
 import re
@@ -11,13 +11,13 @@ from wpull.url import URLInfo, schemes_similar, is_subdir
 
 
 class BaseURLFilter(object, metaclass=abc.ABCMeta):
-    '''Base class for URL filters.
+    """Base class for URL filters.
 
     The Processor uses filters to determine whether a URL should be downloaded.
-    '''
+    """
     @abc.abstractmethod
     def test(self, url_info: URLInfo, url_record: URLRecord) -> bool:
-        '''Return whether the URL should be downloaded.
+        """Return whether the URL should be downloaded.
 
         Args:
             url_info: URL to be tested.
@@ -25,11 +25,11 @@ class BaseURLFilter(object, metaclass=abc.ABCMeta):
 
         Returns:
            If True, the filter passed and the URL should be downloaded.
-        '''
+        """
 
 
 class DemuxURLFilter(BaseURLFilter):
-    '''Puts multiple url filters into one.'''
+    """Puts multiple url filters into one."""
     def __init__(self, url_filters: Iterator[BaseURLFilter]):
         self._url_filters = url_filters
 
@@ -41,7 +41,7 @@ class DemuxURLFilter(BaseURLFilter):
         return self.test_info(url_info, url_table_record)['verdict']
 
     def test_info(self, url_info, url_table_record) -> dict:
-        '''Returns info about which filters passed or failed.
+        """Returns info about which filters passed or failed.
 
         Returns:
             dict: A dict containing the keys:
@@ -51,7 +51,7 @@ class DemuxURLFilter(BaseURLFilter):
             * ``failed`` (set): A set of URLFilters that failed.
             * ``map`` (dict): A mapping from URLFilter class name (str) to
               the verdict (bool).
-        '''
+        """
         passed = set()
         failed = set()
         test_dict = dict()
@@ -76,7 +76,7 @@ class DemuxURLFilter(BaseURLFilter):
 
 
 class SchemeFilter(BaseURLFilter):
-    '''Allow URL if the URL is in list.'''
+    """Allow URL if the URL is in list."""
     def __init__(self, allowed=('http', 'https', 'ftp')):
         self._allowed = allowed
 
@@ -85,13 +85,13 @@ class SchemeFilter(BaseURLFilter):
 
 
 class HTTPSOnlyFilter(BaseURLFilter):
-    '''Allow URL if the URL is HTTPS.'''
+    """Allow URL if the URL is HTTPS."""
     def test(self, url_info, url_table_record):
         return url_info.scheme == 'https'
 
 
 class FollowFTPFilter(BaseURLFilter):
-    '''Follow links to FTP URLs.'''
+    """Follow links to FTP URLs."""
     def __init__(self, follow=False):
         self._follow = follow
 
@@ -107,7 +107,7 @@ class FollowFTPFilter(BaseURLFilter):
 
 
 class BackwardDomainFilter(BaseURLFilter):
-    '''Return whether the hostname matches a list of hostname suffixes.'''
+    """Return whether the hostname matches a list of hostname suffixes."""
     def __init__(self, accepted=None, rejected=None):
         self._accepted = accepted
         self._rejected = rejected
@@ -133,7 +133,7 @@ class BackwardDomainFilter(BaseURLFilter):
 
 
 class HostnameFilter(BaseURLFilter):
-    '''Return whether the hostname matches exactly in a list.'''
+    """Return whether the hostname matches exactly in a list."""
     def __init__(self, accepted=None, rejected=None):
         self._accepted = accepted
         self._rejected = rejected
@@ -150,7 +150,7 @@ class HostnameFilter(BaseURLFilter):
 
 
 class RecursiveFilter(BaseURLFilter):
-    '''Return ``True`` if recursion is used.'''
+    """Return ``True`` if recursion is used."""
     def __init__(self, enabled=False, page_requisites=False):
         self._enabled = enabled
         self._page_requisites = page_requisites
@@ -167,7 +167,7 @@ class RecursiveFilter(BaseURLFilter):
 
 
 class LevelFilter(BaseURLFilter):
-    '''Allow URLs up to a level of recursion.'''
+    """Allow URLs up to a level of recursion."""
     def __init__(self, max_depth, inline_max_depth=5):
         self._depth = max_depth
         self._inline_max_depth = inline_max_depth
@@ -189,7 +189,7 @@ class LevelFilter(BaseURLFilter):
 
 
 class TriesFilter(BaseURLFilter):
-    '''Allow URLs that have been attempted up to a limit of tries.'''
+    """Allow URLs that have been attempted up to a limit of tries."""
     def __init__(self, max_tries):
         self._tries = max_tries
 
@@ -201,7 +201,7 @@ class TriesFilter(BaseURLFilter):
 
 
 class ParentFilter(BaseURLFilter):
-    '''Filter URLs that descend up parent paths.'''
+    """Filter URLs that descend up parent paths."""
     def test(self, url_info, url_table_record):
         if url_table_record.inline_level:
             return True
@@ -224,7 +224,7 @@ class ParentFilter(BaseURLFilter):
 
 
 class SpanHostsFilter(BaseURLFilter):
-    '''Filter URLs that go to other hostnames.'''
+    """Filter URLs that go to other hostnames."""
     def __init__(self, hostnames, enabled=False,
                  page_requisites=False, linked_pages=False):
         self._hostnames = hostnames
@@ -248,7 +248,7 @@ class SpanHostsFilter(BaseURLFilter):
 
 
 class RegexFilter(BaseURLFilter):
-    '''Filter URLs that match a regular expression.'''
+    """Filter URLs that match a regular expression."""
     def __init__(self, accepted=None, rejected=None):
         self._accepted = accepted
         self._rejected = rejected
@@ -264,7 +264,7 @@ class RegexFilter(BaseURLFilter):
 
 
 class DirectoryFilter(BaseURLFilter):
-    '''Filter URLs that match a directory path part.'''
+    """Filter URLs that match a directory path part."""
     def __init__(self, accepted=None, rejected=None):
         self._accepted = accepted
         self._rejected = rejected
@@ -290,7 +290,7 @@ class DirectoryFilter(BaseURLFilter):
 
 
 class BackwardFilenameFilter(BaseURLFilter):
-    '''Filter URLs that match the filename suffixes.'''
+    """Filter URLs that match the filename suffixes."""
     def __init__(self, accepted=None, rejected=None):
         self._accepted = accepted
         self._rejected = rejected

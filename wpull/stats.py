@@ -32,8 +32,8 @@ class Statistics(object):
     def __init__(self, url_table: Optional[BaseURLTable]=None):
         self.start_time = None
         self.stop_time = None
-        self.files = 0
-        self.size = 0
+        self.files: int = 0
+        self.size: int = 0
         self.errors = Counter()
         self.quota = None
         self.bandwidth_meter = BandwidthMeter()
@@ -73,7 +73,7 @@ class Statistics(object):
             return self.size >= self.quota and \
                    self._url_table.get_root_url_todo_count() == 0
 
-    def increment_error(self, error: Exception):
+    def increment_error(self, error: Exception) -> None:
         '''Increment the error counter preferring base exceptions.'''
         _logger.debug('Increment error %s', error)
 

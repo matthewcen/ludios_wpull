@@ -1,5 +1,5 @@
 # encoding=utf-8
-'''Streaming decompressors.'''
+"""Streaming decompressors."""
 import zlib
 
 
@@ -17,7 +17,7 @@ class SimpleGzipDecompressor(object):
         # This works on cpython and pypy, but not jython.
         self.decompressobj = zlib.decompressobj(16 + zlib.MAX_WBITS)
 
-    def decompress(self, value):
+    def decompress(self, value: bytes) -> bytes:
         """Decompress a chunk, returning newly-available data.
 
         Some data may be buffered for later processing; `flush` must
@@ -26,7 +26,7 @@ class SimpleGzipDecompressor(object):
         """
         return self.decompressobj.decompress(value)
 
-    def flush(self):
+    def flush(self) -> bytes:
         """Return any remaining buffered data not yet returned by decompress.
 
         Also checks for errors such as truncated input.
@@ -36,17 +36,18 @@ class SimpleGzipDecompressor(object):
 
 
 class GzipDecompressor(SimpleGzipDecompressor):
-    '''gzip decompressor with gzip header detection.
+    """gzip decompressor with gzip header detection.
 
     This class checks if the stream starts with the 2 byte gzip magic number.
     If it is not present, it returns the bytes unchanged.
-    '''
+    """
+
     def __init__(self):
         super().__init__()
-        self.checked = False
+        self.checked: bool = False
         self.is_ok = None
 
-    def decompress(self, value):
+    def decompress(self, value: bytes) -> bytes:
         if self.checked:
             if self.is_ok:
                 return super().decompress(value)
@@ -54,7 +55,7 @@ class GzipDecompressor(SimpleGzipDecompressor):
                 return value
         else:
             # XXX: gzip magic value is \x1f\x8b but data may come in as
-            # a single byte. The likelyhood of plaintext starting with \x1f is
+            # a single byte. The likelihood of plaintext starting with \x1f is
             # very low, right?
             self.checked = True
             if value[:1] == b'\x1f':
@@ -64,7 +65,7 @@ class GzipDecompressor(SimpleGzipDecompressor):
                 self.is_ok = False
                 return value
 
-    def flush(self):
+    def flush(self) -> bytes:
         if self.is_ok:
             return super().flush()
         else:
@@ -72,16 +73,16 @@ class GzipDecompressor(SimpleGzipDecompressor):
 
 
 class DeflateDecompressor(SimpleGzipDecompressor):
-    '''zlib decompressor with raw deflate detection.
+    """zlib decompressor with raw deflate detection.
 
     This class doesn't do any special. It only tries regular zlib and then
     tries raw deflate on the first decompress.
-    '''
+    """
     def __init__(self):
         super().__init__()
         self.decompressobj = None
 
-    def decompress(self, value):
+    def decompress(self, value) -> bytes:
         if not self.decompressobj:
             try:
                 self.decompressobj = zlib.decompressobj()
@@ -92,15 +93,15 @@ class DeflateDecompressor(SimpleGzipDecompressor):
 
         return self.decompressobj.decompress(value)
 
-    def flush(self):
+    def flush(self) -> bytes:
         if self.decompressobj:
             return super().flush()
         else:
             return b''
 
 
-def gzip_uncompress(data, truncated=False):
-    '''Uncompress gzip data.
+def gzip_uncompress(data: bytes, truncated: bool = False) -> bytes:
+    """Uncompress gzip data.
 
     Args:
         data (bytes): The gzip data.
@@ -113,7 +114,7 @@ def gzip_uncompress(data, truncated=False):
 
     Raises:
         zlib.error
-    '''
+    """
     decompressor = SimpleGzipDecompressor()
     inflated_data = decompressor.decompress(data)
 

@@ -25,7 +25,7 @@ class Measurement(enum.Enum):
 
 
 class Progress(HookableMixin):
-    '''Print file download progress as dots or a bar.
+    """Print file download progress as dots or a bar.
 
     Args:
         bar_style (bool): If True, print as a progress bar. If False,
@@ -33,7 +33,7 @@ class Progress(HookableMixin):
         stream: A file object. Default is usually stderr.
         human_format (true): If True, format sizes in units. Otherwise, output
             bits only.
-    '''
+    """
 
     def __init__(self, stream: IO[str]=sys.stderr):
         super().__init__()
@@ -128,20 +128,20 @@ class ProtocolProgress(Progress):
 
 class ProgressPrinter(ProtocolProgress):
     def _print(self, *args):
-        '''Convenience function for the print function.
+        """Convenience function for the print function.
 
         This function prints no newline.
-        '''
+        """
         string = ' '.join([str(arg) for arg in args])
         print(string, end='', file=self._stream)
 
     def _println(self, *args):
-        '''Convenience function for the print function.'''
+        """Convenience function for the print function."""
         string = ' '.join([str(arg) for arg in args])
         print(string, file=self._stream)
 
     def _flush(self):
-        '''Flush the print stream.'''
+        """Flush the print stream."""
         self._stream.flush()
 
     def update_from_end_response(self, response: BaseResponse):
@@ -172,7 +172,7 @@ class DotProgress(ProgressPrinter):
             self._last_draw_time = time_now
 
     def _print_dots(self):
-        '''Print a dot.'''
+        """Print a dot."""
         self._print('.')
 
 
@@ -215,7 +215,7 @@ class BarProgress(ProgressPrinter):
             self._last_draw_time = time_now
 
     def _print_status(self):
-        '''Print an entire status line including bar and stats.'''
+        """Print an entire status line including bar and stats."""
         self._clear_line()
 
         self._print('  ')
@@ -244,12 +244,12 @@ class BarProgress(ProgressPrinter):
         self._flush()
 
     def _clear_line(self):
-        '''Print ANSI code to clear the current line.'''
+        """Print ANSI code to clear the current line."""
         self._print('\x1b[1G')
         self._print('\x1b[2K')
 
     def _print_throbber(self):
-        '''Print an indefinite progress bar.'''
+        """Print an indefinite progress bar."""
         self._print('[')
 
         for position in range(self._bar_width):
@@ -260,7 +260,7 @@ class BarProgress(ProgressPrinter):
         self._throbber_index = next(self._throbber_iter)
 
     def _print_bar(self):
-        '''Print a progress bar.'''
+        """Print a progress bar."""
         self._print('[')
 
         for position in range(self._bar_width):
@@ -277,16 +277,16 @@ class BarProgress(ProgressPrinter):
         self._print(']')
 
     def _print_size_downloaded(self):
-        '''Print the bytes downloaded.'''
+        """Print the bytes downloaded."""
         self._print(wpull.string.format_size(self.current_value))
 
     def _print_duration(self):
-        '''Print the elapsed download time.'''
+        """Print the elapsed download time."""
         duration = int(time.time() - self._start_time)
         self._print(datetime.timedelta(seconds=duration))
 
     def _print_speed(self):
-        '''Print the current speed.'''
+        """Print the current speed."""
         if self._bandwidth_meter.num_samples:
             speed = self._bandwidth_meter.speed()
 
@@ -302,7 +302,7 @@ class BarProgress(ProgressPrinter):
         self._print(speed_str)
 
     def _print_percent(self):
-        '''Print how much is done in percentage.'''
+        """Print how much is done in percentage."""
         fraction_done = ((self.continue_value or 0 + self.current_value) /
                          self.max_value)
 

@@ -29,11 +29,10 @@ def main():
             function_name_str = inspect.getmodule(function).__name__ + '.' + function.__qualname__
 
             out_file.write(
-                ':py:attr:`{} <{}>`\n'.format(hook_name, hook_name_str)
+                f':py:attr:`{hook_name} <{hook_name_str}>`\n'
             )
             out_file.write(
-                '   {} Interface: :py:meth:`{} <{}>`\n\n'.format(
-                    category.value, function.__qualname__, function_name_str)
+                f'   {category.value} Interface: :py:meth:`{function.__qualname__} <{function_name_str}>`\n\n'
             )
 
 

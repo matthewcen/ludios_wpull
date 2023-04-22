@@ -1,4 +1,4 @@
-'''Misc functions.'''
+"""Misc functions."""
 
 import functools
 import gettext
@@ -16,11 +16,11 @@ _logger = logging.getLogger(__name__)
 
 
 def parse_refresh(text):
-    '''Parses text for HTTP Refresh URL.
+    """Parses text for HTTP Refresh URL.
 
     Returns:
         str, None
-    '''
+    """
     match = re.search(r'url\s*=(.+)', text, re.IGNORECASE)
 
     if match:
@@ -35,7 +35,7 @@ def parse_refresh(text):
 
 
 def clean_link_soup(link):
-    '''Strip whitespace from a link in HTML soup.
+    """Strip whitespace from a link in HTML soup.
 
     Args:
         link (str): A string containing the link with lots of whitespace.
@@ -58,17 +58,17 @@ def clean_link_soup(link):
 
     Returns:
         str: The cleaned link.
-    '''
+    """
     return ''.join(
         [line.strip().replace('\t', '') for line in link.splitlines()]
     )
 
 
-def urljoin_safe(base_url, url, allow_fragments=True):
-    '''urljoin with warning log on error.
+def urljoin_safe(base_url, url, allow_fragments: bool= True) -> str:
+    """urljoin with warning log on error.
 
     Returns:
-        str, None'''
+        str, None"""
     try:
         return wpull.url.urljoin(
             base_url, url, allow_fragments=allow_fragments
@@ -77,8 +77,8 @@ def urljoin_safe(base_url, url, allow_fragments=True):
         _logger.warning(f"Unable to parse URL ‘{url}’: {error}.'")
 
 
-def is_likely_inline(link):
-    '''Return whether the link is likely to be inline.'''
+def is_likely_inline(link) -> bool:
+    """Return whether the link is likely to be inline."""
     file_type = mimetypes.guess_type(link, strict=False)[0]
 
     if file_type:
@@ -130,14 +130,14 @@ FIRST_PART_TLD_PATTERN = re.compile(r'[^/][a-zA-Z0-9.-]+\.({})/.'.format('|'.joi
 
 
 def is_likely_link(text):
-    '''Return whether the text is likely to be a link.
+    """Return whether the text is likely to be a link.
 
     This function assumes that leading/trailing whitespace has already been
     removed.
 
     Returns:
         bool
-    '''
+    """
     text = text.lower()
 
     # Check for absolute or relative URLs
@@ -173,20 +173,20 @@ def is_likely_link(text):
 
 
 def is_unlikely_link(text):
-    '''Return whether the text is likely to cause false positives.
+    """Return whether the text is likely to cause false positives.
 
     This function assumes that leading/trailing whitespace has already been
     removed.
 
     Returns:
         bool
-    '''
+    """
     # Check for string concatenation in JavaScript
     if text[:1] in ',;+:' or text[-1:] in '.,;+:':
         return True
 
     # Check for unusual characters
-    if re.search(r'''[\\$()'"[\]{}|<>`]''', text):
+    if re.search(r"""[\\$()'"[\]{}|<>`]""", text):
         return True
 
     if text[:1] == '.' \
@@ -215,11 +215,11 @@ def is_unlikely_link(text):
 
 @functools.lru_cache()
 def identify_link_type(filename):
-    '''Return link type guessed by filename extension.
+    """Return link type guessed by filename extension.
 
     Returns:
         str: A value from :class:`.item.LinkType`.
-    '''
+    """
     mime_type = mimetypes.guess_type(filename)[0]
 
     if not mime_type:

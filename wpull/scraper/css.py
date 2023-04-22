@@ -35,7 +35,7 @@ class CSSScraper(CSSReader, BaseTextStreamScraper):
         if link_type and link_type != LinkType.css:
             return
 
-        link_contexts = set()
+        link_contexts: set = set()
         base_url = request.url_info.url
         encoding = self._encoding_override or \
             detect_response_encoding(response)

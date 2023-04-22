@@ -1,41 +1,41 @@
 # encoding=utf-8
-'''Exceptions.'''
+"""Exceptions."""
 
 import ssl
 
 class ServerError(ValueError):
-    '''Server issued an error.'''
+    """Server issued an error."""
 
 
 class ProtocolError(ValueError):
-    '''A protocol was not followed.'''
+    """A protocol was not followed."""
 
 
 class SSLCertVerificationError(ssl.SSLCertVerificationError):
-    '''A problem occurred validating SSL certificates.'''
+    """A problem occurred validating SSL certificates."""
 
 class NetworkError(OSError):
-    '''A networking error.'''
+    """A networking error."""
 
 
 class ConnectionRefused(NetworkError):
-    '''Server was online, but nothing was being served.'''
+    """Server was online, but nothing was being served."""
 
 
 class DNSNotFound(NetworkError):
-    '''Server's IP address could not be located.'''
+    """Server's IP address could not be located."""
 
 
 class NetworkTimedOut(NetworkError):
-    '''Connection read/write timed out.'''
+    """Connection read/write timed out."""
 
 
 class AuthenticationError(ServerError):
-    '''Username or password error.'''
+    """Username or password error."""
 
 
 class ExitStatus(object):
-    '''Program exit status codes.
+    """Program exit status codes.
 
     Attributes:
         generic_error (1): An unclassified serious or fatal error occurred.
@@ -49,7 +49,7 @@ class ExitStatus(object):
         protocol_error (7): A problem with communicating with a server
             occurred.
         server_error (8): The server had problems fulfilling our requests.
-    '''
+    """
     generic_error = 1
     parser_error = 2
     file_io_error = 3
@@ -72,4 +72,4 @@ ERROR_PRIORITIES = (
     IOError,
     ValueError,
 )
-'''List of error classes by least severe to most severe.'''
+"""List of error classes by least severe to most severe."""

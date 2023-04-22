@@ -7,8 +7,8 @@ class URLRewriter(object):
     '''Clean up URLs.'''
 
     def __init__(self, hash_fragment: bool=False, session_id: bool=False):
-        self._hash_fragment_enabled = hash_fragment
-        self._session_id_enabled = session_id
+        self._hash_fragment_enabled: bool = hash_fragment
+        self._session_id_enabled: bool = session_id
 
     def rewrite(self, url_info: URLInfo) -> URLInfo:
         '''Rewrite the given URL.'''
@@ -16,7 +16,7 @@ class URLRewriter(object):
             return url_info
 
         if self._session_id_enabled:
-            url = '{scheme}://{authority}{path}?{query}#{fragment}'.format(
+            url: str = '{scheme}://{authority}{path}?{query}#{fragment}'.format(
                 scheme=url_info.scheme,
                 authority=url_info.authority,
                 path=strip_path_session_id(url_info.path),
@@ -41,12 +41,13 @@ SESSION_ID_PATH_PATTERNS = (
     re.compile("^(.*/)(\\([0-9a-z]{24}\\)/)([^\\?]+\\.aspx.*)$", re.I),
 )
 
-def strip_path_session_id(path):
+
+def strip_path_session_id(path: str) -> str:
     '''Strip session ID from URL path.'''
     for pattern in SESSION_ID_PATH_PATTERNS:
         match = pattern.match(path)
         if match:
-            path = match.group(1) + match.group(3)
+            path: str = match.group(1) + match.group(3)
 
     return path
 
@@ -59,7 +60,8 @@ SESSION_ID_QUERY_PATTERNS = (
     re.compile("^(.*)(?:cfid=[^&]+&cftoken=[^&]+)(?:&(.*))?$", re.I),
 )
 
-def strip_query_session_id(query):
+
+def strip_query_session_id(query: str) -> str:
     for pattern in SESSION_ID_QUERY_PATTERNS:
         match = pattern.match(query)
         if match:

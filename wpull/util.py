@@ -53,7 +53,7 @@ def reset_file_offset(file):
     file.seek(offset)
 
 
-def peek_file(file, length=4096):
+def peek_file(file, length: int=4096):
     '''Peek the file by calling ``read`` on it.'''
     with reset_file_offset(file):
         return file.read(length)
@@ -96,16 +96,16 @@ def python_version():
     return f'{major}.{minor}.{patch}'
 
 
-def filter_pem(data):
+def filter_pem(data: bytes) -> set:
     '''Processes the bytes for PEM certificates.
 
     Returns:
         ``set`` containing each certificate
     '''
     assert isinstance(data, bytes), f'Expect bytes. Got {type(data)}.'
-    certs = set()
-    new_list = []
-    in_pem_block = False
+    certs: set = set()
+    new_list: list = []
+    in_pem_block: bool = False
 
     for line in re.split(br'[\r\n]+', data):
         if line == b'-----BEGIN CERTIFICATE-----':
@@ -115,7 +115,7 @@ def filter_pem(data):
             assert in_pem_block
             in_pem_block = False
 
-            content = b''.join(new_list)
+            content: bytes = b''.join(new_list)
             content = rewrap_bytes(content)
 
             certs.add(b'-----BEGIN CERTIFICATE-----\n' +
@@ -179,7 +179,7 @@ def get_package_filename(filename, package_dir=None):
     return os.path.join(package_dir, filename)
 
 
-def is_ascii(text):
+def is_ascii(text: str) -> bool:
     '''Returns whether the given string is ASCII.'''
     try:
         text.encode('ascii', 'strict')
@@ -190,7 +190,7 @@ def is_ascii(text):
 
 
 @contextlib.contextmanager
-def close_on_error(close_func):
+def close_on_error(close_func) -> None:
     '''Context manager to close object on error.'''
     try:
         yield
@@ -200,7 +200,7 @@ def close_on_error(close_func):
         raise
 
 
-def get_exception_message(instance):
+def get_exception_message(instance) -> str:
     '''Try to get the exception message or the class name.'''
     args = getattr(instance, 'args', None)
 

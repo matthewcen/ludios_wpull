@@ -18,13 +18,13 @@ _ = gettext.gettext
 
 
 class ItemSession(object):
-    '''Item for a URL that needs to processed.'''
+    """Item for a URL that needs to processed."""
     def __init__(self, app_session: AppSession, url_record: URLRecord):
         self.app_session = app_session
         self.url_record = url_record
-        self._processed = False
-        self._try_count_incremented = False
-        self._add_url_batch = []
+        self._processed: bool = False
+        self._try_count_incremented: bool = False
+        self._add_url_batch: list = []
 
         self._request = None
         self._response = None
@@ -35,7 +35,7 @@ class ItemSession(object):
 
     @property
     def is_processed(self):
-        '''Return whether the item has been processed.'''
+        """Return whether the item has been processed."""
         return self._processed
 
     @property
@@ -55,21 +55,21 @@ class ItemSession(object):
         self._response = response
 
     def skip(self):
-        '''Mark the item as processed without download.'''
+        """Mark the item as processed without download."""
         _logger.debug(f"Skipping ‘{self.url_record.url}’.")
         self.app_session.factory['URLTable'].check_in(self.url_record.url, Status.skipped)
 
         self._processed = True
 
-    def set_status(self, status: Status, increment_try_count: bool=True,
-                   filename: str=None):
-        '''Mark the item with the given status.
+    def set_status(self, status: Status, increment_try_count: bool = True,
+                   filename: str = None):
+        """Mark the item with the given status.
 
         Args:
             status: a value from :class:`Status`.
             increment_try_count: if True, increment the ``try_count``
                 value
-        '''
+        """
         url = self.url_record.url
         assert not self._try_count_incremented, (url, status)
 
@@ -111,7 +111,7 @@ class ItemSession(object):
                       post_data: Optional[str]=None,
                       level: Optional[int]=None,
                       replace: bool=False):
-        '''Add links scraped from the document with automatic values.
+        """Add links scraped from the document with automatic values.
 
         Args:
             url: A full URL. (It can't be a relative path.)
@@ -131,7 +131,7 @@ class ItemSession(object):
         * ``root``
 
         See also :meth:`add_url`.
-        '''
+        """
         url_properties = URLProperties()
         url_properties.level = self.url_record.level + 1 if level is None else level
         url_properties.inline_level = (self.url_record.inline_level or 0) + 1 if inline else None
@@ -150,10 +150,10 @@ class ItemSession(object):
                          link_type: Optional[LinkType]=None,
                          post_data: Optional[str]=None,
                          level: Optional[int]=None):
-        '''Return a child URLRecord.
+        """Return a child URLRecord.
 
         This function is useful for testing filters before adding to table.
-        '''
+        """
         url_record = URLRecord()
         url_record.url = url
         url_record.status = Status.todo

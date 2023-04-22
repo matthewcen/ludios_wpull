@@ -12,7 +12,7 @@ class RegexStream(object):
             that is searched.
     '''
 
-    def __init__(self, file, pattern, read_size=16384, overlap_size=4096):
+    def __init__(self, file, pattern, read_size: int=16384, overlap_size: int = 4096):
         self._file = file
         self._pattern = pattern
         self._read_size = read_size
@@ -41,14 +41,14 @@ class RegexStream(object):
             if chunk_a is None:
                 continue
 
-            chunk_b_index = chunk_a_index + len(chunk_a)
+            chunk_b_index: int = chunk_a_index + len(chunk_a)
 
             if not chunk_a:
                 break
 
             current_chunk = chunk_a + chunk_b[:self._overlap_size]
 
-            offset_end = len(chunk_a) + self._overlap_size
+            offset_end: int = len(chunk_a) + self._overlap_size
 
             while True:
                 offset_start = search_start_index - chunk_a_index

@@ -38,16 +38,16 @@ def main():
         path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             'api',
-            '{0}.rst'.format(name)
+            f'{name}.rst'
         )
         with open(path, 'w') as out_file:
             out_file.write('.. This document was automatically generated.\n')
             out_file.write('   DO NOT EDIT!\n\n')
 
-            title = ':mod:`{0}` Module'.format(name)
+            title = f':mod:`{name}` Module'
             out_file.write(title + '\n')
             out_file.write('=' * len(title) + '\n\n')
-            out_file.write('.. automodule:: wpull.{0}\n'.format(name))
+            out_file.write(f'.. automodule:: wpull.{name}\n')
             out_file.write('    :members:\n')
             out_file.write('    :show-inheritance:\n')
             out_file.write('    :undoc-members:\n')

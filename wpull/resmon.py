@@ -1,6 +1,7 @@
 '''Resource monitor.'''
 import collections
 import logging
+from typing import NamedTuple
 
 
 _logger = logging.getLogger(__name__)
@@ -13,18 +14,12 @@ except ImportError as error:
     psutil = None
 
 
-ResourceInfo = collections.namedtuple(
-    'ResourceInfoType',
-    ['path', 'free', 'limit']
-)
-'''Resource level information
-
-Attributes:
-    path (str, None): File path of the resource. ``None`` is provided for
-        memory usage.
-    free (int): Number of bytes available.
-    limit (int): Minimum bytes of the resource.
-'''
+class ResourceInfo(NamedTuple):
+    # Resource level information
+    path: str  # File path of the resource. ``None`` is provided for memory usage.
+    free: int  # Number of bytes available.
+    limit: int  # Minimum bytes of the resource.
+    name: str = "ResourceInfoType"
 
 
 class ResourceMonitor(object):
@@ -36,18 +31,18 @@ class ResourceMonitor(object):
         min_disk (int, optional): Minimum disk space in bytes.
         min_memory (int, optional): Minimum memory in bytes.
     '''
-    def __init__(self, resource_paths=('/',), min_disk=10000,
-                 min_memory=10000):
+    def __init__(self, resource_paths: list[str] = ('/',), min_disk: int = 10000,
+                 min_memory: int = 10000):
         assert not isinstance(resource_paths, str), type(resource_paths)
 
-        self._resource_paths = resource_paths
-        self._min_disk = min_disk
-        self._min_memory = min_memory
+        self._resource_paths: list[str] = resource_paths
+        self._min_disk: int = min_disk
+        self._min_memory: int = min_memory
 
         if not psutil:
-            raise OSError('psutil is not available')
+            raise OSError("module 'psutil' is not available")
 
-    def get_info(self):
+    def get_info(self) -> ResourceInfo:
         '''Return ResourceInfo instances.'''
         if self._min_disk:
             for path in self._resource_paths:
@@ -60,14 +55,14 @@ class ResourceMonitor(object):
 
             yield ResourceInfo(None, usage.available, self._min_memory)
 
-    def check(self):
+    def check(self) -> ResourceInfo:
         '''Check resource levels.
 
          Returns:
             None, ResourceInfo: If None is provided, no levels are exceeded.
                 Otherwise, the first ResourceInfo exceeding limits is returned.
         '''
-
+        info: ResourceInfo
         for info in self.get_info():
             if info.free < info.limit:
                 return info

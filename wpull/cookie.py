@@ -1,5 +1,5 @@
 # encoding=utf-8
-'''HTTP Cookies.'''
+"""HTTP Cookies."""
 from http.cookiejar import DefaultCookiePolicy
 import http.cookiejar
 import logging
@@ -15,29 +15,30 @@ _logger = logging.getLogger(__name__)
 
 
 class DeFactoCookiePolicy(DefaultCookiePolicy):
-    '''Cookie policy that limits the content and length of the cookie.
+    """Cookie policy that limits the content and length of the cookie.
 
     Args:
         cookie_jar: The CookieJar instance.
 
     This policy class is *not* designed to be shared between CookieJar
     instances.
-    '''
+    """
+
     def __init__(self, *args, **kwargs):
-        self.cookie_jar = kwargs.pop('cookie_jar')
+        self.cookie_jar: dict = kwargs.pop('cookie_jar')
         DefaultCookiePolicy.__init__(self, *args, **kwargs)
 
-    def set_ok(self, cookie, request):
+    def set_ok(self, cookie, request) -> bool:
         if not DefaultCookiePolicy.set_ok(self, cookie, request):
             return False
 
         try:
-            new_cookie_length = (self.cookie_length(cookie.domain) +
-                                 len(cookie.path) + len(cookie.name) +
-                                 len(cookie.value or ''))
+            new_cookie_length: int = (self.cookie_length(cookie.domain) +
+                                      len(cookie.path) + len(cookie.name) +
+                                      len(cookie.value or ''))
         except TypeError:
             # cookiejar is not infallible #220
-            _logger.debug('Cookie handling error', exc_info=1)
+            _logger.debug('Cookie handling error', exc_info=True)
             return False
 
         if new_cookie_length >= 4100:
@@ -56,7 +57,7 @@ class DeFactoCookiePolicy(DefaultCookiePolicy):
         return True
 
     def count_cookies(self, domain):
-        '''Return the number of cookies for the given domain.'''
+        """Return the number of cookies for the given domain."""
         cookies = self.cookie_jar._cookies
 
         if domain in cookies:
@@ -66,14 +67,14 @@ class DeFactoCookiePolicy(DefaultCookiePolicy):
         else:
             return 0
 
-    def cookie_length(self, domain):
-        '''Return approximate length of all cookie key-values for a domain.'''
+    def cookie_length(self, domain) -> int:
+        """Return approximate length of all cookie key-values for a domain."""
         cookies = self.cookie_jar._cookies
 
         if domain not in cookies:
             return 0
 
-        length = 0
+        length: int = 0
 
         for path in cookies[domain]:
             for name in cookies[domain][path]:
@@ -84,10 +85,10 @@ class DeFactoCookiePolicy(DefaultCookiePolicy):
 
 
 class BetterMozillaCookieJar(http.cookiejar.FileCookieJar):
-    '''MozillaCookieJar that is compatible with Wget/Curl.
+    """MozillaCookieJar that is compatible with Wget/Curl.
 
     It ignores file header checks and supports session cookies.
-    '''
+    """
     # This class from cpython/Lib/http/cookiejar.py changeset 95436:ea94f6c87f5d
     # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
     # 2011, 2012, 2013, 2014, 2015 Python Software Foundation; All Rights
@@ -101,7 +102,7 @@ class BetterMozillaCookieJar(http.cookiejar.FileCookieJar):
 """
 
     def _really_load(self, f, filename, ignore_discard, ignore_expires):
-        now = time.time()
+        now: int = int(time.time())
 
         magic = f.readline()
         if not self.magic_re.search(magic):
@@ -109,7 +110,7 @@ class BetterMozillaCookieJar(http.cookiejar.FileCookieJar):
                 "%r does not look like a Netscape format cookies file" %
                 filename)
 
-        line = ""
+        line: str = ""
         try:
             while 1:
                 line = f.readline()
@@ -175,25 +176,24 @@ class BetterMozillaCookieJar(http.cookiejar.FileCookieJar):
 
     def save(self, filename=None, ignore_discard=False, ignore_expires=False):
         if filename is None:
-            if self.filename is not None: filename = self.filename
-            else: raise ValueError(http.cookiejar.MISSING_FILENAME_TEXT)
+            if self.filename is not None:
+                filename = self.filename
+            else:
+                raise ValueError(http.cookiejar.MISSING_FILENAME_TEXT)
 
         with open(filename, "w") as f:
             f.write(self.header)
-            now = time.time()
+            now: int = int(time.time())
             for cookie in self:
                 if not ignore_discard and cookie.discard:
                     continue
                 if not ignore_expires and cookie.is_expired(now):
                     continue
-                if cookie.secure:
-                    secure = "TRUE"
-                else:
-                    secure = "FALSE"
-                if cookie.domain.startswith("."):
-                    initial_dot = "TRUE"
-                else:
-                    initial_dot = "FALSE"
+
+                # bool -> upper(str)
+                secure: str = str(cookie.secure).upper()
+                initial_dot: str = str(cookie.domain.startswith(".")).upper()
+
                 if cookie.expires is not None:
                     expires = str(cookie.expires)
                 else:

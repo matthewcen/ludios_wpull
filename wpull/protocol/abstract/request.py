@@ -2,6 +2,7 @@
 import abc
 
 from wpull.url import URLInfo
+from wpull.body import Body
 
 
 class DictableMixin(object):
@@ -96,5 +97,5 @@ class BaseRequest(URLPropertyMixin):
 class BaseResponse(ProtocolResponseMixin):
     def __init__(self):
         super().__init__()
-        self.body = None
+        self.body: Body = None
         self.request = None

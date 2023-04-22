@@ -9,7 +9,7 @@ CODEC_NAMES = (
     'cp424',
     'cp437',
     'cp500',
-    # 'cp720',  # not in py 2.6
+    'cp720',
     'cp737',
     'cp775',
     'cp850',
@@ -17,7 +17,7 @@ CODEC_NAMES = (
     'cp855',
     'cp856',
     'cp857',
-    # 'cp858',  # not in py 2.6
+    'cp858',
     'cp860',
     'cp861',
     'cp862',

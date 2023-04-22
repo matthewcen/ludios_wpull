@@ -1,5 +1,5 @@
 # encoding=utf-8
-'''HTTP conversation objects.'''
+"""HTTP conversation objects."""
 import copy
 import re
 
@@ -11,7 +11,7 @@ import wpull.string
 
 
 class RawRequest(BaseRequest, SerializableMixin, DictableMixin):
-    '''Represents an HTTP request.
+    """Represents an HTTP request.
 
     Attributes:
         method (str): The HTTP method in the status line. For example, ``GET``,
@@ -23,7 +23,7 @@ class RawRequest(BaseRequest, SerializableMixin, DictableMixin):
             the HTTP header.
         body (:class:`.body.Body`, file-like, None): An optional payload.
         encoding (str): The encoding of the status line.
-    '''
+    """
     def __init__(self, method=None, resource_path=None, version='HTTP/1.1'):
         super().__init__()
         self.method = method
@@ -62,12 +62,12 @@ class RawRequest(BaseRequest, SerializableMixin, DictableMixin):
         self.fields.parse(data, strict=False)
 
     def parse_status_line(self, data):
-        '''Parse the status line bytes.
+        """Parse the status line bytes.
 
         Returns:
             tuple: An tuple representing the method, URI, and
             version.
-        '''
+        """
         match = re.match(
             br'([a-zA-Z]+)[ \t]+([^ \t]+)[ \t]+(HTTP/\d+\.\d+)',
             data
@@ -86,24 +86,24 @@ class RawRequest(BaseRequest, SerializableMixin, DictableMixin):
         return f'<Request({self.method}, {self.resource_path}, {self.version})>'
 
     def copy(self):
-        '''Return a copy.'''
+        """Return a copy."""
         return copy.deepcopy(self)
 
     def set_continue(self, offset):
-        '''Modify the request into a range request.'''
+        """Modify the request into a range request."""
         assert offset >= 0, offset
-        self.fields['Range'] = 'bytes={0}-'.format(offset)
+        self.fields['Range'] = f'bytes={offset}-'
 
 
 class Request(RawRequest):
-    '''Represents a higher level of HTTP request.
+    """Represents a higher level of HTTP request.
 
     Attributes:
         address (tuple): An address tuple suitable for :func:`socket.connect`.
         username (str): Username for HTTP authentication.
         password (str): Password for HTTP authentication.
-    '''
-    def __init__(self, url=None, method='GET', version='HTTP/1.1'):
+    """
+    def __init__(self, url: str = None, method: str ='GET', version: str ='HTTP/1.1'):
         super().__init__(method=method, resource_path=url, version=version)
 
         self.address = None
@@ -111,7 +111,7 @@ class Request(RawRequest):
         self.password = None
 
         if url:
-            self.url = url
+            self.url: str = url
 
     def to_dict(self):
         dict_obj = super().to_dict()
@@ -121,12 +121,12 @@ class Request(RawRequest):
         return dict_obj
 
     def prepare_for_send(self, full_url=False):
-        '''Modify the request to be suitable for HTTP server.
+        """Modify the request to be suitable for HTTP server.
 
         Args:
             full_url (bool): Use full URL as the URI. By default, only
                 the path of the URL is given to the server.
-        '''
+        """
         assert self.url
         assert self.method
         assert self.version
@@ -157,7 +157,7 @@ class Request(RawRequest):
 
 
 class Response(BaseResponse, SerializableMixin, DictableMixin):
-    '''Represents the HTTP response.
+    """Represents the HTTP response.
 
     Attributes:
         status_code (int): The status code in the status line.
@@ -170,7 +170,7 @@ class Response(BaseResponse, SerializableMixin, DictableMixin):
             (without and transfer or content encoding).
         request: The corresponding request.
         encoding (str): The encoding of the status line.
-    '''
+    """
     def __init__(self, status_code=None, reason=None, version='HTTP/1.1', request=None):
         super().__init__()
 
@@ -179,12 +179,12 @@ class Response(BaseResponse, SerializableMixin, DictableMixin):
                 'Expect int, got {}'.format(type(status_code))
             assert reason is not None
 
-        self.status_code = status_code
-        self.reason = reason
-        self.version = version
-        self.fields = NameValueRecord(encoding='latin-1')
-        self.request = request
-        self.encoding = 'latin-1'
+        self.status_code: int = status_code
+        self.reason: str = reason
+        self.version: str = version
+        self.fields: NameValueRecord = NameValueRecord(encoding='latin-1')
+        self.request= request
+        self.encoding: str = 'latin-1'
 
     @property
     def protocol(self):
@@ -223,11 +223,11 @@ class Response(BaseResponse, SerializableMixin, DictableMixin):
 
     @classmethod
     def parse_status_line(cls, data):
-        '''Parse the status line bytes.
+        """Parse the status line bytes.
 
         Returns:
             tuple: An tuple representing the version, code, and reason.
-        '''
+        """
         match = re.match(
             br'(HTTP/\d+\.\d+)[ \t]+([0-9]{1,3})[ \t]*([^\r\n]*)',
             data
@@ -252,8 +252,8 @@ class Response(BaseResponse, SerializableMixin, DictableMixin):
             self.to_bytes().decode('utf-8', 'replace'), keep_newlines=True
         )
 
-    def response_code(self):
+    def response_code(self) -> int:
         return self.status_code
 
-    def response_message(self):
+    def response_message(self) -> str:
         return self.reason

@@ -1,5 +1,4 @@
 # encoding=utf-8
-# 2to3 bug, python version 2.6, 2.7.3: http.server line must not be at top
 import abc
 import base64
 import http.server

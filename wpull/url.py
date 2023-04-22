@@ -1,4 +1,4 @@
-'''URL parsing based on WHATWG URL living standard.'''
+"""URL parsing based on WHATWG URL living standard."""
 import collections
 import fnmatch
 import functools
@@ -27,42 +27,42 @@ RELATIVE_SCHEME_DEFAULT_PORTS = {
 }
 
 C0_CONTROL_SET = frozenset(chr(i) for i in range(0, 0x1f + 1))
-'''Characters from 0x00 to 0x1f inclusive'''
+"""Characters from 0x00 to 0x1f inclusive"""
 
 DEFAULT_ENCODE_SET = frozenset(b' "#<>?`')
-'''Percent encoding set as defined by WHATWG URL living standard.
+"""Percent encoding set as defined by WHATWG URL living standard.
 
 Does not include U+0000 to U+001F nor U+001F or above.
-'''
+"""
 
 PASSWORD_ENCODE_SET = DEFAULT_ENCODE_SET | frozenset(b'/@\\')
-'''Encoding set for passwords.'''
+"""Encoding set for passwords."""
 
 USERNAME_ENCODE_SET = PASSWORD_ENCODE_SET | frozenset(b':')
-'''Encoding set for usernames.'''
+"""Encoding set for usernames."""
 
 QUERY_ENCODE_SET = frozenset(b'"#<>`')
-'''Encoding set for query strings.
+"""Encoding set for query strings.
 
 This set does not include U+0020 (space) so it can be replaced with
 U+0043 (plus sign) later.
-'''
+"""
 
 FRAGMENT_ENCODE_SET = frozenset(b' "<>`')
-'''Encoding set for fragment.'''
+"""Encoding set for fragment."""
 
 QUERY_VALUE_ENCODE_SET = QUERY_ENCODE_SET | frozenset(b'&+%')
-'''Encoding set for a query value.'''
+"""Encoding set for a query value."""
 
 FORBIDDEN_HOSTNAME_CHARS = frozenset('#%/:?@[\\] ')
-'''Forbidden hostname characters.
+"""Forbidden hostname characters.
 
 Does not include non-printing characters. Meant for ASCII.
-'''
+"""
 
 
 class URLInfo(object):
-    '''Represent parts of a URL.
+    """Represent parts of a URL.
 
     Attributes:
         raw (str): Original string.
@@ -91,7 +91,7 @@ class URLInfo(object):
 
     For more information about how the URL parts are derived, see
     https://medialize.github.io/URI.js/about-uris.html
-    '''
+    """
 
     __slots__ = ('raw', 'scheme', 'authority', 'path', 'query', 'fragment',
                  'userinfo', 'username', 'password',
@@ -121,7 +121,7 @@ class URLInfo(object):
     @classmethod
     @functools.lru_cache()
     def parse(cls, url, default_scheme='http', encoding='utf-8'):
-        '''Parse a URL and return a URLInfo.'''
+        """Parse a URL and return a URLInfo."""
         if url is None:
             return None
 
@@ -219,7 +219,7 @@ class URLInfo(object):
 
     @classmethod
     def parse_authority(cls, authority):
-        '''Parse the authority part and return userinfo and host.'''
+        """Parse the authority part and return userinfo and host."""
         userinfo, sep, host = authority.partition('@')
 
         if not sep:
@@ -229,14 +229,14 @@ class URLInfo(object):
 
     @classmethod
     def parse_userinfo(cls, userinfo):
-        '''Parse the userinfo and return username and password.'''
+        """Parse the userinfo and return username and password."""
         username, sep, password = userinfo.partition(':')
 
         return username, password
 
     @classmethod
     def parse_host(cls, host):
-        '''Parse the host and return hostname and port.'''
+        """Parse the host and return hostname and port."""
         if host.endswith(']'):
             return cls.parse_hostname(host), None
         else:
@@ -254,7 +254,7 @@ class URLInfo(object):
 
     @classmethod
     def parse_hostname(cls, hostname):
-        '''Parse the hostname and normalize.'''
+        """Parse the hostname and normalize."""
         if hostname.startswith('['):
             return cls.parse_ipv6_hostname(hostname)
         else:
@@ -272,12 +272,12 @@ class URLInfo(object):
             return new_hostname
 
     @classmethod
-    def parse_ipv6_hostname(cls, hostname):
-        '''Parse and normalize a IPv6 address.'''
+    def parse_ipv6_hostname(cls, hostname) -> str:
+        """Parse and normalize a IPv6 address."""
         if not hostname.startswith('[') or not hostname.endswith(']'):
             raise ValueError(f'Invalid IPv6 address: {ascii(hostname)}')
 
-        hostname = ipaddress.IPv6Address(hostname[1:-1]).compressed
+        hostname: str = ipaddress.IPv6Address(hostname[1:-1]).compressed
 
         return hostname
 
@@ -325,7 +325,7 @@ class URLInfo(object):
         return self._url
 
     def to_dict(self):
-        '''Return a dict of the attributes.'''
+        """Return a dict of the attributes."""
         return dict(
             raw=self.raw,
             scheme=self.scheme,
@@ -346,18 +346,18 @@ class URLInfo(object):
         )
 
     def is_port_default(self):
-        '''Return whether the URL is using the default port.'''
+        """Return whether the URL is using the default port."""
         if self.scheme in RELATIVE_SCHEME_DEFAULT_PORTS:
             return RELATIVE_SCHEME_DEFAULT_PORTS[self.scheme] == self.port
 
-    def is_ipv6(self):
-        '''Return whether the URL is IPv6.'''
+    def is_ipv6(self) -> bool:
+        """Return whether the URL is IPv6."""
         if self.host:
             return self.host.startswith('[')
 
     @property
     def hostname_with_port(self):
-        '''Return the host portion but omit default port if needed.'''
+        """Return the host portion but omit default port if needed."""
         default_port = RELATIVE_SCHEME_DEFAULT_PORTS.get(self.scheme)
         if not default_port:
             return ''
@@ -375,11 +375,11 @@ class URLInfo(object):
         else:
             return hostname
 
-    def split_path(self):
-        '''Return the directory and filename from the path.
+    def split_path(self) -> tuple:
+        """Return the directory and filename from the path.
 
         The results are not percent-decoded.
-        '''
+        """
         return posixpath.split(self.path)
 
     def __repr__(self):
@@ -397,11 +397,11 @@ class URLInfo(object):
 
 
 def parse_url_or_log(url, encoding='utf-8'):
-    '''Parse and return a URLInfo.
+    """Parse and return a URLInfo.
 
     This function logs a warning if the URL cannot be parsed and returns
     None.
-    '''
+    """
     try:
         url_info = URLInfo.parse(url, encoding=encoding)
     except ValueError as error:
@@ -411,7 +411,7 @@ def parse_url_or_log(url, encoding='utf-8'):
 
 
 def normalize(url, **kwargs):
-    '''Normalize a URL.
+    """Normalize a URL.
 
     This function is a convenience function that is equivalent to::
 
@@ -419,13 +419,13 @@ def normalize(url, **kwargs):
         'http://example.com'
 
     :seealso: :func:`URLInfo.parse`.
-    '''
+    """
     return URLInfo.parse(url, **kwargs).url
 
 
 @functools.lru_cache()
 def normalize_hostname(hostname):
-    '''Normalizes a hostname so that it is ASCII and valid domain name.'''
+    """Normalizes a hostname so that it is ASCII and valid domain name."""
     try:
         new_hostname = hostname.encode('idna').decode('ascii').lower()
     except UnicodeError as error:
@@ -438,7 +438,7 @@ def normalize_hostname(hostname):
     return new_hostname
 
 
-def parse_ipv4_int(text):
+def parse_ipv4_int(text: str) -> int:
     if text.startswith('0x'):
         base = 16
     elif text.startswith('0'):
@@ -465,86 +465,86 @@ def normalize_ipv4_address(address):
         raise ValueError('Not an IPv4 address')
 
 
-def normalize_path(path, encoding='utf-8'):
-    '''Normalize a path string.
+def normalize_path(path: str, encoding='utf-8') -> str:
+    """Normalize a path string.
 
     Flattens a path by removing dot parts,
     percent-encodes unacceptable characters and ensures percent-encoding is
     uppercase.
-    '''
+    """
     if not path.startswith('/'):
         path = '/' + path
-    path = percent_encode(flatten_path(path, flatten_slashes=True), encoding=encoding)
+    path: str = percent_encode(flatten_path(path, flatten_slashes=True), encoding=encoding)
     return uppercase_percent_encoding(path)
 
 
-def normalize_query(text, encoding='utf-8'):
-    '''Normalize a query string.
+def normalize_query(text, encoding='utf-8') -> str:
+    """Normalize a query string.
 
     Percent-encodes unacceptable characters and ensures percent-encoding is
     uppercase.
-    '''
-    path = percent_encode_plus(text, encoding=encoding)
+    """
+    path: str = percent_encode_plus(text, encoding=encoding)
     return uppercase_percent_encoding(path)
 
 
-def normalize_fragment(text, encoding='utf-8'):
-    '''Normalize a fragment.
+def normalize_fragment(text, encoding='utf-8') -> str:
+    """Normalize a fragment.
 
     Percent-encodes unacceptable characters and ensures percent-encoding is
     uppercase.
-    '''
-    path = percent_encode(text, encoding=encoding, encode_set=FRAGMENT_ENCODE_SET)
+    """
+    path: str = percent_encode(text, encoding=encoding, encode_set=FRAGMENT_ENCODE_SET)
     return uppercase_percent_encoding(path)
 
 
-def normalize_username(text, encoding='utf-8'):
-    '''Normalize a username
+def normalize_username(text, encoding='utf-8') -> str:
+    """Normalize a username
 
     Percent-encodes unacceptable characters and ensures percent-encoding is
     uppercase.
-    '''
-    path = percent_encode(text, encoding=encoding, encode_set=USERNAME_ENCODE_SET)
+    """
+    path: str = percent_encode(text, encoding=encoding, encode_set=USERNAME_ENCODE_SET)
     return uppercase_percent_encoding(path)
 
 
-def normalize_password(text, encoding='utf-8'):
-    '''Normalize a password
+def normalize_password(text: str, encoding='utf-8') -> str:
+    """Normalize a password
 
     Percent-encodes unacceptable characters and ensures percent-encoding is
     uppercase.
-    '''
+    """
     path = percent_encode(text, encoding=encoding, encode_set=PASSWORD_ENCODE_SET)
     return uppercase_percent_encoding(path)
 
 
 class PercentEncoderMap(collections.defaultdict):
-    '''Helper map for percent encoding.'''
+    """Helper map for percent encoding."""
     # This class is based on urllib.parse.Quoter
-    def __init__(self, encode_set):
+    def __init__(self, encode_set: frozenset):
         super().__init__()
-        self.encode_set = encode_set
+        self.encode_set: frozenset = encode_set
 
-    def __missing__(self, char):
+    def __missing__(self, char) -> str:
         if char < 0x20 or char > 0x7E or char in self.encode_set:
-            result = '%{:02X}'.format(char)
+            result: str = '%{:02X}'.format(char)
         else:
-            result = chr(char)
+            result: str = chr(char)
         self[char] = result
         return result
 
 
 _percent_encoder_map_cache = {}
-'''Cache of :class:`PercentEncoderMap`.'''
+"""Cache of :class:`PercentEncoderMap`."""
 
 
-def percent_encode(text, encode_set=DEFAULT_ENCODE_SET, encoding='utf-8'):
-    '''Percent encode text.
+def percent_encode(text: str, encode_set=DEFAULT_ENCODE_SET, encoding='utf-8') -> str:
+    """Percent encode text.
 
     Unlike Python's ``quote``, this function accepts a blacklist instead of
     a whitelist of safe characters.
-    '''
-    byte_string = text.encode(encoding)
+    """
+    byte_string: bytes = text.encode(encoding)
 
     try:
         mapping = _percent_encoder_map_cache[encode_set]
@@ -555,13 +555,13 @@ def percent_encode(text, encode_set=DEFAULT_ENCODE_SET, encoding='utf-8'):
     return ''.join([mapping(char) for char in byte_string])
 
 
-def percent_encode_plus(text, encode_set=QUERY_ENCODE_SET,
-                        encoding='utf-8'):
-    '''Percent encode text for query strings.
+def percent_encode_plus(text: str, encode_set=QUERY_ENCODE_SET,
+                        encoding='utf-8') -> str:
+    """Percent encode text for query strings.
 
     Unlike Python's ``quote_plus``, this function accepts a blacklist instead
     of a whitelist of safe characters.
-    '''
+    """
     if ' ' not in text:
         return percent_encode(text, encode_set, encoding)
     else:
@@ -569,23 +569,24 @@ def percent_encode_plus(text, encode_set=QUERY_ENCODE_SET,
         return result.replace(' ', '+')
 
 
-def percent_encode_query_value(text, encoding='utf-8'):
-    '''Percent encode a query value.'''
+def percent_encode_query_value(text: str, encoding: str = 'utf-8') -> str:
+    """Percent encode a query value."""
     result = percent_encode_plus(text, QUERY_VALUE_ENCODE_SET, encoding)
     return result
+
 
 percent_decode = urllib.parse.unquote
 percent_decode_plus = urllib.parse.unquote_plus
 
 
-def schemes_similar(scheme1, scheme2):
-    '''Return whether URL schemes are similar.
+def schemes_similar(scheme1, scheme2) -> bool:
+    """Return whether URL schemes are similar.
 
     This function considers the following schemes to be similar:
 
     * HTTP and HTTPS
 
-    '''
+    """
     if scheme1 == scheme2:
         return True
 
@@ -596,7 +597,7 @@ def schemes_similar(scheme1, scheme2):
 
 
 def is_subdir(base_path, test_path, trailing_slash=False, wildcards=False):
-    '''Return whether the a path is a subpath of another.
+    """Return whether the a path is a subpath of another.
 
     Args:
         base_path: The base path
@@ -605,7 +606,7 @@ def is_subdir(base_path, test_path, trailing_slash=False, wildcards=False):
             For example, ``/images/`` is a directory while ``/images`` is a
             file.
         wildcards: If True, globbing wildcards are matched against paths
-    '''
+    """
     if trailing_slash:
         base_path = base_path.rsplit('/', 1)[0] + '/'
         test_path = test_path.rsplit('/', 1)[0] + '/'
@@ -623,7 +624,7 @@ def is_subdir(base_path, test_path, trailing_slash=False, wildcards=False):
 
 
 def uppercase_percent_encoding(text):
-    '''Uppercases percent-encoded sequences.'''
+    """Uppercases percent-encoded sequences."""
     if '%' not in text:
         return text
 
@@ -634,7 +635,7 @@ def uppercase_percent_encoding(text):
 
 
 def split_query(qs, keep_blank_values=False):
-    '''Split the query string.
+    """Split the query string.
 
     Note for empty values: If an equal sign (``=``) is present, the value
     will be an empty string (``''``). Otherwise, the value will be ``None``::
@@ -643,7 +644,7 @@ def split_query(qs, keep_blank_values=False):
         [('a', ''), ('b', None)]
 
     No processing is done on the actual values.
-    '''
+    """
     items = []
     for pair in qs.split('&'):
         name, delim, value = pair.partition('=')
@@ -658,10 +659,10 @@ def split_query(qs, keep_blank_values=False):
 
 
 def query_to_map(text):
-    '''Return a key-values mapping from a query string.
+    """Return a key-values mapping from a query string.
 
     Plus symbols are replaced with spaces.
-    '''
+    """
     dict_obj = {}
 
     for key, value in split_query(text, True):
@@ -677,10 +678,10 @@ def query_to_map(text):
 
 
 @functools.lru_cache()
-def urljoin(base_url, url, allow_fragments=True):
-    '''Join URLs like ``urllib.parse.urljoin`` but allow scheme-relative URL.'''
+def urljoin(base_url: str, url: str, allow_fragments: bool = True) -> str:
+    """Join URLs like ``urllib.parse.urljoin`` but allow scheme-relative URL."""
     if url.startswith('//') and len(url) > 2:
-        scheme = base_url.partition(':')[0]
+        scheme: str = base_url.partition(':')[0]
         if scheme:
             return urllib.parse.urljoin(
                 base_url,
@@ -692,8 +693,8 @@ def urljoin(base_url, url, allow_fragments=True):
         base_url, url, allow_fragments=allow_fragments)
 
 
-def flatten_path(path, flatten_slashes=False):
-    '''Flatten an absolute URL path by removing the dot segments.
+def flatten_path(path: str, flatten_slashes: bool = False) -> str:
+    """Flatten an absolute URL path by removing the dot segments.
 
     :func:`urllib.parse.urljoin` has some support for removing dot segments,
     but it is conservative and only removes them as needed.
@@ -703,7 +704,7 @@ def flatten_path(path, flatten_slashes=False):
         flatten_slashes (bool): If True, consecutive slashes are removed.
 
     The path returned will always have a leading slash.
-    '''
+    """
     # Based on posixpath.normpath
 
     # Fast path
